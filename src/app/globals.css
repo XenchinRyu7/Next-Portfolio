@@ -1,0 +1,256 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bone: #f2ede2;
+  --ink: #0a0a0a;
+  --ink-soft: #1a1a1a;
+  --mute: #7a7368;
+  --rule: #d9d2c2;
+  --acid: #d4ff2e;
+  --plum: #ff3d2e;
+  --cobalt: #2a2afe;
+}
+
+html,
+body {
+  background: var(--bone);
+  color: var(--ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  cursor: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  body {
+    cursor: auto;
+  }
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--acid);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ——— Typography utility layer ——— */
+@layer utilities {
+  .font-serif {
+    font-family: var(--font-serif), ui-serif, Georgia, serif;
+  }
+  .font-sans {
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  }
+  .font-mono {
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+  }
+
+  .display-1 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: -0.04em;
+    line-height: 0.88;
+  }
+  .display-2 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    line-height: 0.94;
+  }
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .rule-top {
+    border-top: 1px solid var(--rule);
+  }
+  .rule-bottom {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .mesh {
+    background-image:
+      linear-gradient(to right, rgba(10, 10, 10, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(10, 10, 10, 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-2 border border-[var(--ink)] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.18em];
+  }
+}
+
+/* ——— Grain overlay (applied via <Grain /> component) ——— */
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  mix-blend-mode: multiply;
+  opacity: 0.35;
+}
+
+/* ——— Custom cursor ——— */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 100;
+  will-change: transform;
+}
+.cursor-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--ink);
+  transform: translate(-50%, -50%);
+}
+.cursor-ring {
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  border: 1px solid var(--ink);
+  transform: translate(-50%, -50%);
+  mix-blend-mode: difference;
+  transition:
+    width 180ms ease,
+    height 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+.cursor-ring[data-hover="true"] {
+  width: 72px;
+  height: 72px;
+  background: var(--acid);
+  border-color: var(--acid);
+}
+@media (hover: none) and (pointer: coarse) {
+  .cursor-dot,
+  .cursor-ring {
+    display: none;
+  }
+}
+
+/* ——— Marquee ——— */
+.marquee {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.marquee-track {
+  display: inline-flex;
+  gap: 3rem;
+  animation: marquee 40s linear infinite;
+  min-width: max-content;
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ——— Journey map active node ——— */
+.journey-node {
+  transition:
+    transform 450ms cubic-bezier(0.2, 0.9, 0.2, 1),
+    opacity 450ms ease,
+    filter 450ms ease;
+}
+.journey-node[data-active="true"] {
+  transform: scale(1);
+  opacity: 1;
+  filter: none;
+}
+.journey-node[data-active="false"] {
+  transform: scale(0.97);
+  opacity: 0.35;
+  filter: grayscale(60%);
+}
+
+/* pulsing dot keyframes for the active journey node */
+@keyframes pulse-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(2.2);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.2);
+    opacity: 0;
+  }
+}
+.pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 9999px;
+  border: 2px solid var(--ink);
+  animation: pulse-ring 1.8s cubic-bezier(0.2, 0.9, 0.2, 1) infinite;
+}
+
+/* subtle diagonal hatch for placeholders */
+.hatch {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(10, 10, 10, 0.1) 0,
+    rgba(10, 10, 10, 0.1) 1px,
+    transparent 1px,
+    transparent 10px
+  );
+}
+
+/* Focus ring for a11y */
+:where(a, button, input, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* Curtain scroll cue */
+@keyframes curtain-scroll {
+  0% {
+    transform: translateY(-100%);
+  }
+  50% {
+    transform: translateY(250%);
+  }
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+/* ScrollReveal word splits */
+.sr-word-inner {
+  display: inline-block;
+  will-change: transform, opacity;
+}
