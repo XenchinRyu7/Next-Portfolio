@@ -25,16 +25,16 @@ export const journey: JourneyStage[] = [
   },
   {
     id: "mahasiswa",
-    year: "2022 — Present",
+    year: "2022 — 2026",
     tag: "Level 02 · Expansion",
-    title: "Mahasiswa — Informatics Engineering",
-    place: "Computer Science / Teknik Informatika",
+    title: "Graduate — Informatics Engineering",
+    place: "Teknik Informatika · GPA 3.83",
     description:
-      "Formal grounding in algorithms, systems, networking and software engineering. Started shipping real products: mobile apps, fullstack platforms, and small games built in Unity/Godot.",
+      "Graduated with a GPA of 3.83 in Informatics Engineering. Formal grounding in algorithms, systems, networking and software engineering. Shipped real products: mobile apps, fullstack platforms, and small games built in Unity/Godot.",
     highlights: [
+      "Graduated with GPA 3.83",
       "Data Structures · Algorithms · DB",
       "Fullstack capstone projects",
-      "Studio collabs",
     ],
   },
   {

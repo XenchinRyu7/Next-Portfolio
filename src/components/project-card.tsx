@@ -1,6 +1,7 @@
 import Link from "next/link";
 import clsx from "clsx";
 import type { Project } from "@/data/projects";
+import { formatTimeline } from "@/lib/project-api";
 
 const accentMap: Record<Project["accent"], string> = {
   acid: "bg-[var(--acid)] text-[var(--ink)]",
@@ -17,6 +18,7 @@ export default function ProjectCard({
   index: number;
 }) {
   const accent = accentMap[project.accent];
+
   return (
     <Link
       href={`/work/${project.slug}`}
@@ -55,7 +57,7 @@ export default function ProjectCard({
             {project.title}
           </h3>
           <span className="font-mono text-xs uppercase tracking-[0.2em]">
-            {project.year}
+            {formatTimeline(project.startDate, project.endDate, project.status)}
           </span>
         </div>
       </div>
@@ -64,7 +66,7 @@ export default function ProjectCard({
           {project.tagline}
         </p>
         <ul className="flex flex-wrap gap-1.5">
-          {project.stack.map((s) => (
+          {project.technologies.map((s) => (
             <li
               key={s}
               className="border border-[var(--ink)]/40 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.15em] text-[var(--ink)]/80"

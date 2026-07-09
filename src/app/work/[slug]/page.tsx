@@ -9,6 +9,7 @@ import {
   getAdjacentShowcaseProjects,
   getShowcaseProject,
   getShowcaseProjects,
+  formatTimeline,
 } from "@/lib/project-api";
 
 const variantByAccent: Record<
@@ -47,6 +48,7 @@ export default async function ProjectDetailPage({ params }: { params: Params }) 
   const { prev, next } = await getAdjacentShowcaseProjects(params.slug);
   const variant = variantByAccent[project.accent];
 
+
   return (
     <>
       {/* Cold-open hero */}
@@ -59,7 +61,7 @@ export default async function ProjectDetailPage({ params }: { params: Params }) 
             ← All work
           </Link>
           <p className="label mt-10 text-[var(--mute)]">
-            § {project.kind} · {project.year}
+            § {project.kind} · {formatTimeline(project.startDate, project.endDate, project.status)}
           </p>
           <div className="mt-6 md:mt-10">
             <MistTitle reflectHeight={0.5}>
@@ -73,7 +75,7 @@ export default async function ProjectDetailPage({ params }: { params: Params }) 
               {project.tagline}
             </p>
             <div className="col-span-12 flex flex-wrap gap-2 md:col-span-4 md:justify-end">
-              {project.stack.map((s) => (
+              {project.technologies.map((s) => (
                 <span
                   key={s}
                   className="border border-[var(--ink)] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em]"
@@ -99,7 +101,7 @@ export default async function ProjectDetailPage({ params }: { params: Params }) 
       <section className="mx-auto mt-14 max-w-[1400px] px-5 md:px-10">
         <dl className="grid grid-cols-2 gap-px border border-[var(--rule)] bg-[var(--rule)] md:grid-cols-4">
           <MetaCell k="Role" v={project.role} />
-          <MetaCell k="Year" v={project.year} />
+          <MetaCell k="Timeline" v={formatTimeline(project.startDate, project.endDate, project.status)} />
           <MetaCell k="Kind" v={project.kind} />
           <MetaCell k="Status" v={formatStatus(project.status)} />
         </dl>
@@ -252,12 +254,6 @@ function formatStatus(status?: Project["status"]) {
   return "Shipped";
 }
 
-function formatTimeline(startDate?: string, endDate?: string) {
-  if (startDate && endDate) return `${startDate} - ${endDate}`;
-  if (startDate) return `Started ${startDate}`;
-  if (endDate) return `Finished ${endDate}`;
-  return "Timeline pending";
-}
 
 function Block({
   title,

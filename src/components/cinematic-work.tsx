@@ -3,6 +3,7 @@
 import Link from "next/link";
 import clsx from "clsx";
 import type { Project } from "@/data/projects";
+import { formatTimeline } from "@/lib/project-api";
 import ScrollReveal from "@/components/scroll-reveal";
 import Parallax from "@/components/parallax";
 
@@ -60,7 +61,7 @@ export default function CinematicWork({
         <span>
           Scene {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
         </span>
-        <span className="hidden md:inline">{project.kind} · {project.year}</span>
+        <span className="hidden md:inline">{project.kind} · {formatTimeline(project.startDate, project.endDate, project.status)}</span>
       </div>
 
       {/* Title cluster */}
@@ -105,7 +106,7 @@ export default function CinematicWork({
           stagger={0.06}
           start="top 80%"
         >
-          {project.stack.slice(0, 6).map((s) => (
+          {project.technologies.slice(0, 6).map((s) => (
             <span
               key={s}
               className="border px-3 py-1 font-mono text-[10px] uppercase tracking-[0.22em]"

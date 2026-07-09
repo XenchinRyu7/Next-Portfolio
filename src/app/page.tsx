@@ -4,6 +4,7 @@ import MistTitle from "@/components/mist-title";
 import PainterlyMoment from "@/components/painterly-moment";
 import PrinciplesWeb from "@/components/principles-web";
 import CinematicWork from "@/components/cinematic-work";
+import BentoGrid from "@/components/bento-grid";
 import CurtainIntro from "@/components/curtain-intro";
 import ScrollReveal from "@/components/scroll-reveal";
 import Parallax from "@/components/parallax";
@@ -60,7 +61,7 @@ export default async function Home() {
           <div className="mt-20 grid grid-cols-12 gap-6 md:mt-32">
             <ScrollReveal className="col-span-12 md:col-span-7" stagger={0.1}>
               <p className="max-w-2xl text-balance font-serif text-[clamp(1.1rem,1.6vw,1.4rem)] italic leading-[1.4] text-[var(--ink)]/80">
-                Computer Science student. I build at the intersection of{" "}
+                Informatics Engineering graduate (GPA 3.83). I build at the intersection of{" "}
                 <span className="not-italic font-medium">mobile</span>,{" "}
                 <span className="not-italic font-medium">fullstack web</span>,{" "}
                 <span className="not-italic font-medium">games</span>, and{" "}
@@ -198,6 +199,7 @@ export default async function Home() {
 
       {/* ═══════════════ SCENE 04 · PRINCIPLES ═══════════════ */}
       <PrinciplesWeb />
+      <BentoGrid />
 
       {/* ═══════════════ HERO MOMENT · HORIZON ═══════════════ */}
       <PainterlyMoment

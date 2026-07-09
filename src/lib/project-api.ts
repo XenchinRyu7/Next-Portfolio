@@ -11,18 +11,19 @@ type ApiProject = {
   slug?: string;
   description?: string;
   shortDescription?: string;
+  tagline?: string;
   kind?: string;
   accent?: string;
   problem?: string;
-  approach?: string | string[];
-  outcome?: string | string[];
+  approach?: string[];
+  outcome?: string[];
   technologies?: string[];
   role?: string;
   status?: "completed" | "in-progress" | "planned" | string;
   startDate?: string;
   endDate?: string;
   features?: string[];
-  links?: Record<string, string | null | undefined>;
+  links?: { label: string; href: string }[] | Record<string, string | null | undefined>;
   images?: { url: string; alt?: string }[];
   tags?: string[];
   highlight?: boolean;
@@ -115,10 +116,10 @@ function mapApiProject(
     apiProject.slug ??
     localProject?.slug ??
     slugify(apiProject.title ?? "project-showcase");
-  const stack =
+  const technologies =
     apiProject.technologies && apiProject.technologies.length > 0
       ? apiProject.technologies
-      : localProject?.stack ?? [];
+      : localProject?.technologies ?? [];
   const features = apiProject.features ?? localProject?.features ?? [];
   const description =
     apiProject.description ??
@@ -131,17 +132,19 @@ function mapApiProject(
     id: apiProject.id ?? localProject?.id,
     slug,
     title: apiProject.title ?? localProject?.title ?? "Untitled Project",
-    year:
-      formatProjectYear(apiProject.startDate, apiProject.endDate) ??
-      localProject?.year ??
-      "2026",
     kind: apiProject.kind ?? localProject?.kind ?? inferKind(apiProject),
-    stack,
+    technologies,
     tagline:
-      apiProject.shortDescription ??
+      apiProject.tagline ??
       localProject?.tagline ??
+      apiProject.shortDescription ??
       description ??
       "Project showcase.",
+    shortDescription:
+      apiProject.shortDescription ??
+      localProject?.shortDescription ??
+      description ??
+      "",
     description,
     role: apiProject.role ?? localProject?.role ?? "Developer",
     accent:
@@ -156,7 +159,7 @@ function mapApiProject(
     approach:
       normalizeList(apiProject.approach) ??
       localProject?.approach ??
-      (features.length > 0 ? features : stack.map((item) => `Built with ${item}.`)),
+      (features.length > 0 ? features : technologies.map((item) => `Built with ${item}.`)),
     outcome:
       normalizeList(apiProject.outcome) ??
       localProject?.outcome ??
@@ -176,10 +179,12 @@ function mapApiProject(
 }
 
 function getApiBaseUrl() {
+  const isDev = process.env.NODE_ENV === "development";
+  const defaultUrl = isDev ? "http://localhost:3001" : DEFAULT_API_BASE_URL;
   return (
     process.env.PORTFOLIO_API_URL ??
     process.env.NEXT_PUBLIC_PORTFOLIO_API_URL ??
-    DEFAULT_API_BASE_URL
+    defaultUrl
   ).replace(/\/$/, "");
 }
 
@@ -209,21 +214,43 @@ function inferKind(apiProject: ApiProject): Project["kind"] {
   return "Fullstack Web";
 }
 
-function formatProjectYear(startDate?: string, endDate?: string) {
-  const startYear = startDate?.slice(0, 4);
-  const endYear = endDate?.slice(0, 4);
+export function formatTimeline(startDate?: string, endDate?: string, status?: string) {
+  if (!startDate && !endDate) return "Timeline pending";
 
-  if (startYear && endYear && startYear !== endYear) {
-    return `${startYear}-${endYear}`;
+  const formatDate = (dateStr: string) => {
+    try {
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) return dateStr;
+      return date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+    } catch {
+      return dateStr;
+    }
+  };
+
+  if (startDate && endDate) {
+    return `${formatDate(startDate)} — ${formatDate(endDate)}`;
   }
-
-  return endYear ?? startYear;
+  if (startDate) {
+    if (status === "in-progress") {
+      return `${formatDate(startDate)} — Present`;
+    }
+    return `Started ${formatDate(startDate)}`;
+  }
+  if (endDate) {
+    return `Finished ${formatDate(endDate)}`;
+  }
+  return "Timeline pending";
 }
 
 function mapLinks(links?: ApiProject["links"]) {
   if (!links) return undefined;
 
-  const mapped = Object.entries(links)
+  if (Array.isArray(links)) {
+    return links;
+  }
+
+  const record = links as Record<string, string | null | undefined>;
+  const mapped = Object.entries(record)
     .filter((entry): entry is [string, string] => Boolean(entry[1]))
     .map(([label, href]) => ({ label: humanize(label), href }));
 

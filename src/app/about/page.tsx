@@ -6,7 +6,7 @@ import { skillGroups, marqueeWords } from "@/data/skills";
 export const metadata: Metadata = {
   title: "About — Saeful Rohman",
   description:
-    "A closer look at Saeful Rohman — Computer Science student, mobile and fullstack developer, game developer, and AI engineer building autonomous agents.",
+    "A closer look at Saeful Rohman — Informatics Engineering graduate (GPA 3.83), mobile and fullstack developer, game developer, and AI engineer building autonomous agents.",
 };
 
 const philosophy = [
@@ -68,7 +68,7 @@ export default function AboutPage() {
 
           <dl className="mt-8 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
             <Row k="Name" v="Saeful Rohman" />
-            <Row k="Role" v="CS Student · Fullstack · AI" />
+            <Row k="Role" v="Informatics Graduate · Fullstack · AI" />
             <Row k="Based" v="Indonesia · remote-friendly" />
             <Row k="Spoken" v="Bahasa · English" />
             <Row k="Email" v="saefulrohmandevelopers@gmail.com" />
@@ -78,9 +78,8 @@ export default function AboutPage() {
         <div className="col-span-12 md:col-span-7 md:pl-10">
           <div className="space-y-6 text-[16px] leading-relaxed text-[var(--ink)]/85 md:text-[17px]">
             <p>
-              I’m a Computer Science student and generalist engineer from
-              Indonesia. I started building for the web in high school, kept
-              building through my mahasiswa years, and now spend most of my time
+              I’m an Informatics Engineering graduate (GPA 3.83) and generalist engineer from
+              Indonesia. I started building for the web in high school, graduated from my undergraduate program in 2026, and now spend most of my time
               between fullstack platforms and AI engineering.
             </p>
             <p>

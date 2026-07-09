@@ -9,12 +9,12 @@ import {
   SiUnity,
   SiPython,
   SiTailwindcss,
-  SiOpenai,
+  SiHuggingface,
   SiDocker,
   SiPostgresql,
   SiNodedotjs,
   SiFigma,
-  SiGreensock,
+  SiKubernetes,
   SiKotlin,
   SiSwift,
   SiGo,
@@ -23,38 +23,26 @@ import {
 } from "react-icons/si";
 import type { IconType } from "react-icons";
 
-const icons: { I: IconType; label: string }[] = [
-  { I: SiNextdotjs, label: "Next.js" },
-  { I: SiReact, label: "React" },
-  { I: SiTypescript, label: "TypeScript" },
-  { I: SiFlutter, label: "Flutter" },
-  { I: SiUnity, label: "Unity" },
-  { I: SiGodotengine, label: "Godot" },
-  { I: SiPython, label: "Python" },
-  { I: SiOpenai, label: "OpenAI" },
-  { I: SiGreensock, label: "GSAP" },
-  { I: SiTailwindcss, label: "Tailwind" },
-  { I: SiNodedotjs, label: "Node" },
-  { I: SiPostgresql, label: "Postgres" },
-  { I: SiDocker, label: "Docker" },
-  { I: SiFigma, label: "Figma" },
-  { I: SiKotlin, label: "Kotlin" },
-  { I: SiSwift, label: "Swift" },
-  { I: SiGo, label: "Go" },
-  { I: SiRust, label: "Rust" },
+const icons: { I: IconType; label: string; color: string }[] = [
+  { I: SiNextdotjs, label: "Next.js", color: "#ffffff" },
+  { I: SiReact, label: "React", color: "#61dafb" },
+  { I: SiTypescript, label: "TypeScript", color: "#3178c6" },
+  { I: SiFlutter, label: "Flutter", color: "#02569b" },
+  { I: SiUnity, label: "Unity", color: "#ffffff" },
+  { I: SiGodotengine, label: "Godot", color: "#478cbf" },
+  { I: SiPython, label: "Python", color: "#3776ab" },
+  { I: SiHuggingface, label: "Hugging Face", color: "#ffd21e" },
+  { I: SiKubernetes, label: "Kubernetes", color: "#326ce5" },
+  { I: SiTailwindcss, label: "Tailwind", color: "#06b6d4" },
+  { I: SiNodedotjs, label: "Node", color: "#339933" },
+  { I: SiPostgresql, label: "Postgres", color: "#4169e1" },
+  { I: SiDocker, label: "Docker", color: "#2496ed" },
+  { I: SiFigma, label: "Figma", color: "#f24e1e" },
+  { I: SiKotlin, label: "Kotlin", color: "#7f52ff" },
+  { I: SiSwift, label: "Swift", color: "#f05138" },
+  { I: SiGo, label: "Go", color: "#00add8" },
+  { I: SiRust, label: "Rust", color: "#ea2b2b" },
 ];
-
-// Deterministic pseudo-random positions so SSR/CSR match.
-const positions = Array.from({ length: icons.length }).map((_, i) => {
-  const s = Math.sin(i * 12.9898) * 43758.5453;
-  const t = Math.sin(i * 78.233 + 1) * 43758.5453;
-  return {
-    x: ((s - Math.floor(s)) * 86) + 7, // 7..93 vw
-    y: ((t - Math.floor(t)) * 72) + 14, // 14..86 vh
-    scale: 0.6 + ((Math.sin(i * 3.17) + 1) / 2) * 0.9,
-    depth: 0.2 + ((Math.cos(i * 1.71) + 1) / 2) * 0.8,
-  };
-});
 
 /**
  * Full-viewport cold-open title card with a floating constellation of
@@ -64,14 +52,41 @@ const positions = Array.from({ length: icons.length }).map((_, i) => {
 export default function CurtainIntro() {
   const rootRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0); // 0 = fully closed, 1 = fully open
+  const [rotationOffset, setRotationOffset] = useState<number[]>(new Array(18).fill(0));
 
+  // Animasi rotasi orbit (tata surya) berkelanjutan
+  useEffect(() => {
+    let rafId: number;
+    let lastTime = performance.now();
+
+    const animate = (now: number) => {
+      const delta = (now - lastTime) / 1000; // dalam detik
+      lastTime = now;
+
+      setRotationOffset((prev) =>
+        prev.map((val, i) => {
+          const ring = i % 3; // 0 = inner, 1 = middle, 2 = outer
+          // Kecepatan putar (rad/detik), arah berlawanan untuk ring tengah agar estetik
+          const speed = ring === 0 ? 0.05 : ring === 1 ? -0.025 : 0.012;
+          return val + speed * delta;
+        })
+      );
+
+      rafId = requestAnimationFrame(animate);
+    };
+
+    rafId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
+  // Handler Scroll untuk Tirai Curtain
   useEffect(() => {
     let raf = 0;
     const tick = () => {
       const root = rootRef.current;
       if (root) {
         const h = root.offsetHeight;
-        // progress based on how much of the 200vh-tall wrapper has scrolled
+        // progress based on how much of the 320vh-tall wrapper has scrolled
         const p = Math.max(0, Math.min(1, window.scrollY / (h - window.innerHeight)));
         setProgress(p);
       }
@@ -91,8 +106,8 @@ export default function CurtainIntro() {
     };
   }, []);
 
-  // Curtain splits horizontally. Each half translates X by up to 55%.
-  const split = progress * 55;
+  // Curtain splits horizontally. Each half translates X by up to 110% of its width.
+  const split = progress * 110;
   // Icons drift: parallax-like, different axes per icon
   const driftY = progress * 40;
   // Welcome text fades out / shrinks as curtain opens
@@ -103,12 +118,13 @@ export default function CurtainIntro() {
     <div
       ref={rootRef}
       className="relative"
-      style={{ height: "220vh" }}
+      style={{ height: "320vh" }} // Diperpanjang agar tirai terbuka penuh secara halus
     >
-      {/* Sticky container pins for the full 220vh range */}
+      {/* Sticky container pins for the full 320vh range */}
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden bg-[var(--ink)] text-[var(--bone)]">
+        
         {/* Constellation background (always behind curtains) */}
-        <div className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 pointer-events-none z-0">
           <div
             className="absolute inset-0"
             style={{
@@ -116,29 +132,35 @@ export default function CurtainIntro() {
                 "radial-gradient(70% 60% at 50% 45%, rgba(255,61,46,0.22) 0%, rgba(255,61,46,0.06) 35%, transparent 70%)",
             }}
           />
-          {icons.map(({ I, label }, i) => {
-            const p = positions[i];
-            const tx = (p.depth - 0.5) * progress * 120;
-            const ty = driftY * p.depth;
+          {icons.map(({ I, label, color }, i) => {
+            const ring = i % 3;
+            const ringIndex = Math.floor(i / 3);
+            
+            // Konfigurasi Radius Orbit (Oval agar sesuai dengan aspek rasio layar lebar)
+            const radiusX = ring === 0 ? 15 : ring === 1 ? 28 : 41;
+            const radiusY = radiusX * 0.73; // sedikit pipih vertikal agar muat di viewport
+
+            // Sudut awal yang diinterleave (selang-seling) agar tersebar merata
+            const baseAngle = (ringIndex * (2 * Math.PI / 6)) + (ring === 1 ? Math.PI / 6 : 0);
+            const angle = baseAngle + rotationOffset[i];
+
+            // Hitung posisi koordinat X & Y di layar (%)
+            const posX = 50 + radiusX * Math.cos(angle);
+            const posY = 50 + radiusY * Math.sin(angle);
+
+            const scale = ring === 0 ? 0.8 : ring === 1 ? 1.0 : 1.15;
+            const depth = ring === 0 ? 0.4 : ring === 1 ? 0.7 : 1.0;
+
             return (
-              <div
+              <FloatingIcon
                 key={label}
-                className="absolute"
-                style={{
-                  left: `${p.x}%`,
-                  top: `${p.y}%`,
-                  transform: `translate(${tx}px, ${ty}px) scale(${p.scale})`,
-                  opacity: 0.28 + p.depth * 0.55,
-                  transition: "opacity 400ms ease",
-                  willChange: "transform",
-                }}
-              >
-                <I
-                  className="h-10 w-10 md:h-14 md:w-14"
-                  style={{ color: "#f2ede2" }}
-                  aria-hidden
-                />
-              </div>
+                I={I}
+                label={label}
+                color={color}
+                position={{ x: posX, y: posY, scale, depth }}
+                progress={progress}
+                driftY={driftY}
+              />
             );
           })}
         </div>
@@ -146,7 +168,7 @@ export default function CurtainIntro() {
         {/* Grid overlay */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-30"
+          className="pointer-events-none absolute inset-0 opacity-30 z-0"
           style={{
             backgroundImage:
               "linear-gradient(to right, rgba(242,237,226,0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(242,237,226,0.08) 1px, transparent 1px)",
@@ -228,7 +250,7 @@ export default function CurtainIntro() {
 
         {/* WELCOME copy (over curtains) */}
         <div
-          className="relative z-30 flex h-full flex-col items-center justify-center px-5 text-center"
+          className="relative z-30 flex h-full flex-col items-center justify-center px-5 text-center pointer-events-none"
           style={{
             opacity: welcomeOpacity,
             transform: `scale(${welcomeScale})`,
@@ -253,7 +275,7 @@ export default function CurtainIntro() {
             Saeful Rohman.
           </p>
           <p className="mt-10 max-w-xl text-balance font-sans text-[13px] leading-relaxed text-[var(--bone)]/65 md:text-[15px]">
-            Computer Science · Mobile · Fullstack · Games · AI Engineering.
+            Informatics Engineering · Mobile · Fullstack · Games · AI Engineering.
             Scroll to open.
           </p>
 
@@ -286,6 +308,77 @@ export default function CurtainIntro() {
           </p>
         </div>
       </div>
+    </div>
+  );
+}
+
+function FloatingIcon({
+  I,
+  label,
+  color,
+  position,
+  progress,
+  driftY,
+}: {
+  I: IconType;
+  label: string;
+  color: string;
+  position: { x: number; y: number; scale: number; depth: number };
+  progress: number;
+  driftY: number;
+}) {
+  const [hovered, setHovered] = useState(false);
+  const tx = (position.depth - 0.5) * progress * 120;
+  const ty = driftY * position.depth;
+
+  return (
+    <div
+      className="absolute pointer-events-auto cursor-pointer"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        left: `${position.x}%`,
+        top: `${position.y}%`,
+        transform: `translate(-50%, -50%) translate(${tx}px, ${ty}px) scale(${position.scale})`,
+        opacity: hovered ? 1 : 0.28 + position.depth * 0.55,
+        transition: "opacity 300ms ease, transform 300ms cubic-bezier(0.16, 1, 0.3, 1)",
+        willChange: "transform",
+        zIndex: hovered ? 50 : 5,
+      }}
+    >
+      {/* Brand Color Glow Ring */}
+      <div 
+        className="absolute inset-[-25px] -z-10 rounded-full opacity-0 blur-xl transition-all duration-300"
+        style={{
+          background: `radial-gradient(circle, ${color} 0%, transparent 70%)`,
+          opacity: hovered ? 0.45 : 0,
+          transform: hovered ? "scale(1.2)" : "scale(1)",
+          transition: "opacity 300ms ease, transform 300ms ease"
+        }}
+      />
+      
+      {/* Tooltip Label */}
+      <span 
+        className="absolute bottom-[-24px] left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-[var(--bone)] px-2 py-0.5 font-mono text-[9px] uppercase tracking-wider text-[var(--ink)] shadow-md border border-[var(--ink)]/10"
+        style={{
+          opacity: hovered ? 1 : 0,
+          transform: hovered ? "translateY(-4px)" : "translateY(0)",
+          transition: "opacity 200ms ease, transform 200ms ease"
+        }}
+      >
+        {label}
+      </span>
+
+      <I
+        className="h-10 w-10 md:h-12 md:w-12 transition-all duration-300"
+        style={{ 
+          color: hovered ? color : "#f2ede2",
+          transform: hovered ? "scale(1.15)" : "scale(1)",
+          filter: hovered ? `drop-shadow(0 0 8px ${color})` : "none",
+          transition: "color 300ms ease, transform 300ms ease, filter 300ms ease"
+        }}
+        aria-hidden
+      />
     </div>
   );
 }

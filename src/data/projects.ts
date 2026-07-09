@@ -2,10 +2,10 @@ export type Project = {
   id?: string;
   slug: string;
   title: string;
-  year: string;
   kind: string;
-  stack: string[];
+  technologies: string[];
   tagline: string;
+  shortDescription: string;
   description: string;
   role: string;
   accent: "acid" | "plum" | "cobalt" | "ink";
@@ -26,15 +26,19 @@ export const projects: Project[] = [
   {
     slug: "atlas-agent",
     title: "Atlas Agent",
-    year: "2025",
     kind: "AI Engineering",
-    stack: ["TypeScript", "LangGraph", "OpenAI", "Playwright", "Postgres"],
+    technologies: ["TypeScript", "LangGraph", "OpenAI", "Playwright", "Postgres"],
     tagline:
       "An autonomous research agent that browses, reads, and writes reports end-to-end.",
+    shortDescription:
+      "A multi-step AI agent that plans queries, drives a real browser, synthesizes sources and produces cited briefs. Tool-use + self-reflection loop with a strict eval harness.",
     description:
       "A multi-step AI agent that plans queries, drives a real browser, synthesizes sources and produces cited briefs. Tool-use + self-reflection loop with a strict eval harness.",
     role: "Architecture · Agent loop · Tooling",
     accent: "acid",
+    status: "completed",
+    startDate: "2025-01-15",
+    endDate: "2025-05-20",
     problem:
       "Research tasks — competitive analysis, market snapshots, technical due diligence — take analysts hours and are repetitive. Existing LLM chat experiences skip the messy middle: browsing, reading, cross-referencing, and citing.",
     approach: [
@@ -56,14 +60,18 @@ export const projects: Project[] = [
   {
     slug: "arcade-hoop",
     title: "Arcade Hoop",
-    year: "2024",
     kind: "Game Development",
-    stack: ["Unity", "C#", "Shader Graph", "Firebase"],
+    technologies: ["Unity", "C#", "Shader Graph", "Firebase"],
     tagline: "Physics-based arcade basketball with feel-good juice.",
+    shortDescription:
+      "A mobile arcade game built in Unity. Custom trajectory physics, swipe controls, haptics, shaders, and a tight 60fps loop. Released on Play Store.",
     description:
       "A mobile arcade game built in Unity. Custom trajectory physics, swipe controls, haptics, shaders, and a tight 60fps loop. Released on Play Store.",
     role: "Gameplay · Shaders · Release",
     accent: "plum",
+    status: "completed",
+    startDate: "2024-05-10",
+    endDate: "2024-09-18",
     problem:
       "The arcade basketball niche is crowded with lazy clones. Winning requires disproportionately good game-feel — every shot must satisfy within the first 30 seconds.",
     approach: [
@@ -81,14 +89,18 @@ export const projects: Project[] = [
   {
     slug: "warung-pos",
     title: "Warung POS",
-    year: "2024",
     kind: "Fullstack Web",
-    stack: ["Next.js", "tRPC", "Postgres", "Prisma", "Tailwind"],
+    technologies: ["Next.js", "tRPC", "Postgres", "Prisma", "Tailwind"],
     tagline: "A lightning-fast POS for small Indonesian businesses.",
+    shortDescription:
+      "End-to-end point-of-sale platform: inventory, transactions, receipts and offline-first sync. Built for low-bandwidth environments and thumb-friendly usage.",
     description:
       "End-to-end point-of-sale platform: inventory, transactions, receipts and offline-first sync. Built for low-bandwidth environments and thumb-friendly usage.",
     role: "Fullstack · DX · Deployment",
     accent: "cobalt",
+    status: "completed",
+    startDate: "2024-01-05",
+    endDate: "2024-04-30",
     problem:
       "Small-business owners in Indonesia juggle paper ledgers, WhatsApp and a calculator. Existing POS software is either too expensive, tablet-only, or assumes a stable connection.",
     approach: [
@@ -106,14 +118,18 @@ export const projects: Project[] = [
   {
     slug: "flux-mobile",
     title: "Flux Mobile",
-    year: "2024",
     kind: "Mobile Development",
-    stack: ["Flutter", "Dart", "Firebase", "Riverpod"],
+    technologies: ["Flutter", "Dart", "Firebase", "Riverpod"],
     tagline: "A social micro-journaling app with soft, tactile motion.",
+    shortDescription:
+      "Cross-platform mobile app with a hand-built motion system, offline drafts, and a friendship-graph feed. Custom bottom sheets and gestures.",
     description:
       "Cross-platform mobile app with a hand-built motion system, offline drafts, and a friendship-graph feed. Custom bottom sheets and gestures.",
     role: "Mobile engineering · Motion design",
     accent: "ink",
+    status: "completed",
+    startDate: "2024-09-01",
+    endDate: "2024-11-20",
     problem:
       "Micro-journaling apps feel clinical. The brief was: make writing a 2-line note feel as inviting as sending a voice message — but lower-effort.",
     approach: [
@@ -130,15 +146,19 @@ export const projects: Project[] = [
   {
     slug: "lumen-automation",
     title: "Lumen Automation",
-    year: "2025",
     kind: "AI Automation",
-    stack: ["n8n", "Python", "FastAPI", "OpenAI", "Zapier"],
+    technologies: ["n8n", "Python", "FastAPI", "OpenAI", "Zapier"],
     tagline:
       "An internal automation layer that replaced 3 ops roles worth of manual work.",
+    shortDescription:
+      "Automation flows that ingest emails, classify intent with an LLM, act on CRM/ERP systems, and keep humans in the loop only for exceptions. Full audit trail & retries.",
     description:
       "Automation flows that ingest emails, classify intent with an LLM, act on CRM/ERP systems, and keep humans in the loop only for exceptions. Full audit trail & retries.",
     role: "Workflow design · LLM integration",
     accent: "acid",
+    status: "completed",
+    startDate: "2025-02-01",
+    endDate: "2025-04-15",
     problem:
       "An ops team was drowning in manual email triage — sales leads, support tickets, supplier messages — all forwarded by hand to different systems.",
     approach: [
@@ -155,15 +175,19 @@ export const projects: Project[] = [
   {
     slug: "studio-site",
     title: "Studio Site",
-    year: "2023",
     kind: "Fullstack Web",
-    stack: ["Next.js", "GSAP", "Sanity"],
+    technologies: ["Next.js", "GSAP", "Sanity"],
     tagline:
       "A design studio site with editorial typography and choreographed scroll.",
+    shortDescription:
+      "Content-driven agency site with a headless CMS, interactive case studies, and a reduced-motion mode.",
     description:
       "Content-driven agency site with a headless CMS, interactive case studies, and a reduced-motion mode.",
     role: "Design · Frontend · CMS",
     accent: "plum",
+    status: "completed",
+    startDate: "2023-08-10",
+    endDate: "2023-11-05",
     problem:
       "The studio needed a site that could keep up with their design work — most agency sites look like templates dressed up.",
     approach: [
@@ -180,15 +204,19 @@ export const projects: Project[] = [
   {
     slug: "kode-studio",
     title: "Kode Studio",
-    year: "2025",
     kind: "AI Engineering",
-    stack: ["Next.js", "Claude", "Monaco", "WebSockets"],
+    technologies: ["Next.js", "Claude", "Monaco", "WebSockets"],
     tagline:
       "A pair-programming studio where an AI agent runs right inside the editor.",
+    shortDescription:
+      "A Monaco-based editor with a sidecar agent that can read files, propose patches, run tests, and negotiate with the human over chat. Focus on tight latency and undo-safety.",
     description:
       "A Monaco-based editor with a sidecar agent that can read files, propose patches, run tests, and negotiate with the human over chat. Focus on tight latency and undo-safety.",
     role: "Product · Editor integration · Agent UX",
     accent: "cobalt",
+    status: "completed",
+    startDate: "2025-06-01",
+    endDate: "2025-08-12",
     problem:
       "Most AI-in-editor experiences are chat windows bolted onto IDEs. Feedback loops are slow and agent changes feel scary because undo is unreliable.",
     approach: [
@@ -204,14 +232,18 @@ export const projects: Project[] = [
   {
     slug: "tani-tracker",
     title: "Tani Tracker",
-    year: "2023",
     kind: "Mobile Development",
-    stack: ["Kotlin", "Jetpack Compose", "Room", "WorkManager"],
+    technologies: ["Kotlin", "Jetpack Compose", "Room", "WorkManager"],
     tagline: "Android app for small farmers to log harvests, costs and weather.",
+    shortDescription:
+      "A lightweight Android app built for rural use: offline-first, low-memory, and accessible on budget phones. Includes a cost calculator and simple harvest projections.",
     description:
       "A lightweight Android app built for rural use: offline-first, low-memory, and accessible on budget phones. Includes a cost calculator and simple harvest projections.",
     role: "Android engineering · UX for rural users",
     accent: "ink",
+    status: "completed",
+    startDate: "2023-03-01",
+    endDate: "2023-06-30",
     problem:
       "Farmers in rural areas track expenses and harvests in paper notebooks — easy to lose, hard to analyze, and not useful for lenders evaluating their business.",
     approach: [
