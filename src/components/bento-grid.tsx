@@ -1,152 +1,463 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import CanvasCard from "./canvas-card";
-import TextRevealCard from "./text-reveal-card";
-import ScrollReveal from "./scroll-reveal";
+import React, { useRef, useEffect } from "react";
+import Link from "next/link";
 
-/**
- * Bento Grid section containing live clock, academics stats,
- * and mouse-interactive Canvas/TextReveal sandboxes.
- */
-export default function BentoGrid() {
-  return (
-    <section className="relative overflow-hidden py-24 md:py-32 border-t border-[var(--rule)]">
-      <div className="mx-auto max-w-[1400px] px-5 md:px-10">
-        
-        {/* Section Heading */}
-        <div className="mb-12 md:mb-16">
-          <ScrollReveal>
-            <p className="label text-[var(--mute)]">§ Sandbox & Info</p>
-          </ScrollReveal>
-          <ScrollReveal mode="words" stagger={0.06}>
-            <h2 className="display-2 mt-6 text-[clamp(3rem,8vw,6rem)] leading-none">
-              Interactive Space.
-            </h2>
-          </ScrollReveal>
-        </div>
+// GLSL ES 3.0 Fragment Shader source for cosmic clouds
+const defaultShaderSource = `#version 300 es
+precision highp float;
+out vec4 O;
+uniform vec2 resolution;
+uniform float time;
+#define FC gl_FragCoord.xy
+#define T time
+#define R resolution
+#define MN min(R.x,R.y)
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          
-          {/* Row 1: Bio (col-span-2) + Stats (col-span-1) */}
-          <div className="md:col-span-2">
-            <ScrollReveal className="h-full">
-              <BioCard />
-            </ScrollReveal>
-          </div>
-          
-          <div>
-            <ScrollReveal className="h-full">
-              <StatsCard />
-            </ScrollReveal>
-          </div>
-
-          {/* Row 2: Canvas (col-span-1) + TextReveal (col-span-1) + Clock (col-span-1) */}
-          <div>
-            <ScrollReveal className="h-full">
-              <CanvasCard />
-            </ScrollReveal>
-          </div>
-
-          <div>
-            <ScrollReveal className="h-full">
-              <TextRevealCard />
-            </ScrollReveal>
-          </div>
-
-          <div>
-            <ScrollReveal className="h-full">
-              <LiveClock />
-            </ScrollReveal>
-          </div>
-
-        </div>
-      </div>
-    </section>
-  );
+float rnd(vec2 p) {
+  p=fract(p*vec2(12.9898,78.233));
+  p+=dot(p,p+34.56);
+  return fract(p.x*p.y);
 }
 
-function BioCard() {
-  return (
-    <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-xl border border-[var(--ink)]/15 bg-[var(--bone)] p-6 transition-colors hover:border-[var(--ink)]">
-      <div className="absolute inset-0 hatch opacity-[0.07] pointer-events-none" />
-      <div>
-        <span className="label text-[var(--mute)]">§ Core Focus</span>
-        <h3 className="mt-4 font-serif text-2xl md:text-3xl italic leading-tight text-[var(--ink)] max-w-xl">
-          Crafting intelligent systems where code meets intent.
-        </h3>
-      </div>
-      <p className="mt-8 text-[14px] leading-relaxed text-[var(--ink)]/75 max-w-xl">
-        I engineer software at the intersection of fullstack web, mobile platforms, and AI orchestration. My focus is building performant scaffolding, clean architectures, and experiences that feel natural to steer.
-      </p>
-    </div>
-  );
+float noise(in vec2 p) {
+  vec2 i=floor(p), f=fract(p), u=f*f*(3.-2.*f);
+  float
+  a=rnd(i),
+  b=rnd(i+vec2(1,0)),
+  c=rnd(i+vec2(0,1)),
+  d=rnd(i+1.);
+  return mix(mix(a,b,u.x),mix(c,d,u.x),u.y);
 }
 
-function StatsCard() {
-  return (
-    <div className="flex h-full flex-col justify-between rounded-xl border border-[var(--ink)]/15 bg-[var(--bone)] p-5 transition-colors hover:border-[var(--ink)]">
-      <div>
-        <span className="label text-[var(--mute)]">§ Academics</span>
-        <h3 className="mt-3 font-serif text-xl italic leading-tight text-[var(--ink)]">
-          Informatics Engineering
-        </h3>
-      </div>
-      <div className="my-4">
-        <p className="font-mono text-5xl font-bold tracking-tight text-[var(--plum)]">
-          3.83
-        </p>
-        <p className="mt-1 font-mono text-[9px] uppercase tracking-wider text-[var(--ink)]/50">
-          Cumulative GPA &middot; Cum Laude
-        </p>
-      </div>
-      <p className="font-mono text-[10px] uppercase tracking-wider text-[var(--ink)]/60">
-        Teknik Informatika Graduate
-      </p>
-    </div>
-  );
+float fbm(vec2 p) {
+  float t=.0, a=1.; mat2 m=mat2(1.,-.5,.2,1.2);
+  for (int i=0; i<5; i++) {
+    t+=a*noise(p);
+    p*=2.*m;
+    a*=.5;
+  }
+  return t;
 }
 
-function LiveClock() {
-  const [time, setTime] = useState<string>("");
+float clouds(vec2 p) {
+	float d=1., t=.0;
+	for (float i=.0; i<3.; i++) {
+		float a=d*fbm(i*10.+p.x*.2+.2*(1.+i)*p.y+d+i*i+p);
+		t=mix(t,d,a);
+		d=a;
+		p*=2./(i+1.);
+	}
+	return t;
+}
 
-  useEffect(() => {
-    const updateTime = () => {
-      const options: Intl.DateTimeFormatOptions = {
-        timeZone: "Asia/Jakarta",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false,
-      };
-      setTime(new Intl.DateTimeFormat("en-US", options).format(new Date()));
+void main(void) {
+	vec2 uv=(FC-.5*R)/MN,st=uv*vec2(2,1);
+	vec3 col=vec3(0);
+	float bg=clouds(vec2(st.x+T*.15,-st.y));
+	uv*=1.-.3*(sin(T*.1)*.5+.5);
+	for (float i=1.; i<12.; i++) {
+		uv+=.1*cos(i*vec2(.1+.01*i, .8)+i*i+T*.15+.1*uv.x);
+		vec2 p=uv;
+		float d=length(p);
+		col+=.00125/d*(cos(sin(i)*vec3(1,2,3))+1.);
+		float b=noise(i+p+bg*1.731);
+		col+=.002*b/length(max(p,vec2(b*p.x*.02,p.y)));
+		col=mix(col,vec3(bg*.25,bg*.137,bg*.05),d);
+	}
+	O=vec4(col,1);
+}`;
+
+class WebGLRenderer {
+  private canvas: HTMLCanvasElement;
+  private gl: WebGL2RenderingContext;
+  private program: WebGLProgram | null = null;
+  private vs: WebGLShader | null = null;
+  private fs: WebGLShader | null = null;
+  private buffer: WebGLBuffer | null = null;
+  private scale: number;
+  private shaderSource: string;
+  private mouseMove = [0, 0];
+  private mouseCoords = [0, 0];
+  private pointerCoords = [0, 0];
+  private nbrOfPointers = 0;
+
+  // WebGL Uniform locations
+  private uniformResolution: WebGLUniformLocation | null = null;
+  private uniformTime: WebGLUniformLocation | null = null;
+  private uniformMove: WebGLUniformLocation | null = null;
+  private uniformTouch: WebGLUniformLocation | null = null;
+  private uniformPointerCount: WebGLUniformLocation | null = null;
+  private uniformPointers: WebGLUniformLocation | null = null;
+
+  private vertexSrc = `#version 300 es
+precision highp float;
+in vec4 position;
+void main(){gl_Position=position;}`;
+
+  private vertices = [-1, 1, -1, -1, 1, 1, 1, -1];
+
+  constructor(canvas: HTMLCanvasElement, scale: number) {
+    this.canvas = canvas;
+    this.scale = scale;
+    this.gl = canvas.getContext("webgl2")!;
+    this.gl.viewport(0, 0, canvas.width * scale, canvas.height * scale);
+    this.shaderSource = defaultShaderSource;
+  }
+
+  updateShader(source: string) {
+    this.reset();
+    this.shaderSource = source;
+    this.setup();
+    this.init();
+  }
+
+  updateMove(deltas: number[]) {
+    this.mouseMove = deltas;
+  }
+
+  updateMouse(coords: number[]) {
+    this.mouseCoords = coords;
+  }
+
+  updatePointerCoords(coords: number[]) {
+    this.pointerCoords = coords;
+  }
+
+  updatePointerCount(nbr: number) {
+    this.nbrOfPointers = nbr;
+  }
+
+  updateScale(scale: number) {
+    this.scale = scale;
+    this.gl.viewport(0, 0, this.canvas.width * scale, this.canvas.height * scale);
+  }
+
+  compile(shader: WebGLShader, source: string) {
+    const gl = this.gl;
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      const error = gl.getShaderInfoLog(shader);
+      console.error("Shader compilation error:", error);
+    }
+  }
+
+  test(source: string) {
+    let result = null;
+    const gl = this.gl;
+    const shader = gl.createShader(gl.FRAGMENT_SHADER)!;
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      result = gl.getShaderInfoLog(shader);
+    }
+    gl.deleteShader(shader);
+    return result;
+  }
+
+  reset() {
+    const gl = this.gl;
+    if (this.program && !gl.getProgramParameter(this.program, gl.DELETE_STATUS)) {
+      if (this.vs) {
+        gl.detachShader(this.program, this.vs);
+        gl.deleteShader(this.vs);
+      }
+      if (this.fs) {
+        gl.detachShader(this.program, this.fs);
+        gl.deleteShader(this.fs);
+      }
+      gl.deleteProgram(this.program);
+    }
+  }
+
+  setup() {
+    const gl = this.gl;
+    this.vs = gl.createShader(gl.VERTEX_SHADER)!;
+    this.fs = gl.createShader(gl.FRAGMENT_SHADER)!;
+    this.compile(this.vs, this.vertexSrc);
+    this.compile(this.fs, this.shaderSource);
+    this.program = gl.createProgram()!;
+    gl.attachShader(this.program, this.vs);
+    gl.attachShader(this.program, this.fs);
+    gl.linkProgram(this.program);
+
+    if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
+      console.error(gl.getProgramInfoLog(this.program));
+    }
+  }
+
+  init() {
+    const gl = this.gl;
+    const program = this.program!;
+    
+    this.buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
+
+    const position = gl.getAttribLocation(program, "position");
+    gl.enableVertexAttribArray(position);
+    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+
+    this.uniformResolution = gl.getUniformLocation(program, "resolution");
+    this.uniformTime = gl.getUniformLocation(program, "time");
+    this.uniformMove = gl.getUniformLocation(program, "move");
+    this.uniformTouch = gl.getUniformLocation(program, "touch");
+    this.uniformPointerCount = gl.getUniformLocation(program, "pointerCount");
+    this.uniformPointers = gl.getUniformLocation(program, "pointers");
+  }
+
+  render(now = 0) {
+    const gl = this.gl;
+    const program = this.program;
+    
+    if (!program || gl.getProgramParameter(program, gl.DELETE_STATUS)) return;
+
+    gl.clearColor(0, 0, 0, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.useProgram(program);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+    
+    gl.uniform2f(this.uniformResolution, this.canvas.width, this.canvas.height);
+    gl.uniform1f(this.uniformTime, now * 1e-3);
+    gl.uniform2f(this.uniformMove, this.mouseMove[0], this.mouseMove[1]);
+    gl.uniform2f(this.uniformTouch, this.mouseCoords[0], this.mouseCoords[1]);
+    gl.uniform1i(this.uniformPointerCount, this.nbrOfPointers);
+    gl.uniform2fv(this.uniformPointers, this.pointerCoords);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+}
+
+class PointerHandler {
+  private scale: number;
+  private active = false;
+  private pointers = new Map<number, number[]>();
+  private lastCoords = [0, 0];
+  private moves = [0, 0];
+
+  constructor(element: HTMLCanvasElement, scale: number) {
+    this.scale = scale;
+    
+    const map = (canvasEl: HTMLCanvasElement, dprScale: number, x: number, y: number) => {
+      const rect = canvasEl.getBoundingClientRect();
+      return [(x - rect.left) * dprScale, canvasEl.height - (y - rect.top) * dprScale];
     };
 
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
+    element.addEventListener("pointerdown", (e) => {
+      this.active = true;
+      this.pointers.set(e.pointerId, map(element, this.getScale(), e.clientX, e.clientY));
+    });
+
+    const handlePointerUp = (e: PointerEvent) => {
+      if (this.count === 1) {
+        this.lastCoords = this.first;
+      }
+      this.pointers.delete(e.pointerId);
+      this.active = this.pointers.size > 0;
+    };
+
+    element.addEventListener("pointerup", handlePointerUp);
+    element.addEventListener("pointerleave", handlePointerUp);
+
+    element.addEventListener("pointermove", (e) => {
+      if (!this.active) return;
+      this.lastCoords = [e.clientX, e.clientY];
+      this.pointers.set(e.pointerId, map(element, this.getScale(), e.clientX, e.clientY));
+      this.moves = [this.moves[0] + e.movementX, this.moves[1] + e.movementY];
+    });
+  }
+
+  getScale() {
+    return this.scale;
+  }
+
+  updateScale(scale: number) {
+    this.scale = scale;
+  }
+
+  get count() {
+    return this.pointers.size;
+  }
+
+  get move() {
+    return this.moves;
+  }
+
+  get coords() {
+    return this.pointers.size > 0 
+      ? Array.from(this.pointers.values()).flat() 
+      : [0, 0];
+  }
+
+  get first() {
+    return this.pointers.values().next().value || this.lastCoords;
+  }
+}
+
+const useShaderBackground = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationFrameRef = useRef<number>();
+  const rendererRef = useRef<WebGLRenderer | null>(null);
+  const pointersRef = useRef<PointerHandler | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const dpr = Math.max(1, 0.5 * window.devicePixelRatio);
+    
+    rendererRef.current = new WebGLRenderer(canvas, dpr);
+    pointersRef.current = new PointerHandler(canvas, dpr);
+    
+    rendererRef.current.setup();
+    rendererRef.current.init();
+
+    const resize = () => {
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      if (rendererRef.current) {
+        rendererRef.current.updateScale(dpr);
+      }
+    };
+    
+    resize();
+    window.addEventListener("resize", resize);
+    
+    const loop = (now: number) => {
+      if (!rendererRef.current || !pointersRef.current) return;
+      rendererRef.current.updateMouse(pointersRef.current.first);
+      rendererRef.current.updatePointerCount(pointersRef.current.count);
+      rendererRef.current.updatePointerCoords(pointersRef.current.coords);
+      rendererRef.current.updateMove(pointersRef.current.move);
+      rendererRef.current.render(now);
+      animationFrameRef.current = requestAnimationFrame(loop);
+    };
+
+    loop(0);
+    
+    return () => {
+      window.removeEventListener("resize", resize);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      if (rendererRef.current) {
+        rendererRef.current.reset();
+      }
+    };
   }, []);
 
+  return canvasRef;
+};
+
+export default function BentoGrid() {
+  const canvasRef = useShaderBackground();
+
   return (
-    <div className="flex h-full flex-col justify-between rounded-xl border border-[var(--ink)]/15 bg-[var(--bone)] p-5 transition-colors hover:border-[var(--ink)]">
-      <div>
-        <span className="label text-[var(--mute)]">§ Realtime Clock</span>
-        <h3 className="mt-3 font-serif text-xl italic leading-tight text-[var(--ink)]">
-          Jakarta, ID
-        </h3>
+    <div className="relative w-full h-[100svh] overflow-hidden bg-black border-t border-[var(--rule)]">
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes fade-in-down {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .animate-fade-in-down {
+          animation: fade-in-down 0.8s ease-out forwards;
+        }
+        
+        .animate-fade-in-up {
+          animation: fade-in-up 0.8s ease-out forwards;
+          opacity: 0;
+        }
+        
+        .animation-delay-200 {
+          animation-delay: 0.2s;
+        }
+        
+        .animation-delay-400 {
+          animation-delay: 0.4s;
+        }
+        
+        .animation-delay-600 {
+          animation-delay: 0.6s;
+        }
+        
+        .animation-delay-800 {
+          animation-delay: 0.8s;
+        }
+      `}} />
+      
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full object-cover touch-none z-0"
+        style={{ background: "black" }}
+      />
+      
+      {/* Hero Content Overlay */}
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-white">
+        {/* Trust Badge */}
+        <div className="mb-8 animate-fade-in-down">
+          <div className="flex items-center gap-2 px-6 py-3 bg-orange-500/10 backdrop-blur-md border border-orange-300/30 rounded-full text-sm">
+            <div className="flex gap-1 text-yellow-300">
+              <span>✨</span>
+            </div>
+            <span className="text-orange-100 font-mono text-[11px] uppercase tracking-wider">Trusted By The World</span>
+          </div>
+        </div>
+
+        <div className="text-center space-y-6 max-w-5xl mx-auto px-4">
+          {/* Main Heading with Animation */}
+          <div className="space-y-2">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-orange-300 via-yellow-400 to-amber-300 bg-clip-text text-transparent animate-fade-in-up animation-delay-200">
+              Launch Your Product 
+            </h1>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-yellow-300 via-orange-400 to-red-400 bg-clip-text text-transparent animate-fade-in-up animation-delay-400">
+              Into The World
+            </h1>
+          </div>
+          
+          {/* Subtitle with Animation */}
+          <div className="max-w-3xl mx-auto animate-fade-in-up animation-delay-600">
+            <p className="text-lg md:text-xl lg:text-2xl text-orange-100/90 font-light leading-relaxed">
+              Supercharge productivity with AI-powered automation and integrations built for the next generation of developer — fast, seamless, and limitless.
+            </p>
+          </div>
+          
+          {/* CTA Buttons with Animation */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10 animate-fade-in-up animation-delay-800">
+            <Link
+              href="/contact"
+              className="px-8 py-4 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-black rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-orange-500/25 flex items-center justify-center"
+            >
+              Let&apos;s talk
+            </Link>
+            <Link
+              href="/work"
+              className="px-8 py-4 bg-orange-500/10 hover:bg-orange-500/20 border border-orange-300/30 hover:border-orange-300/50 text-orange-100 rounded-full font-semibold text-lg transition-all duration-300 hover:scale-105 backdrop-blur-sm flex items-center justify-center"
+            >
+              See the work
+            </Link>
+          </div>
+        </div>
       </div>
-      <div className="my-4">
-        <p className="font-mono text-4xl font-semibold tracking-wider text-[var(--plum)]">
-          {time || "00:00:00"}
-        </p>
-        <p className="mt-1 font-mono text-[9px] uppercase tracking-wider text-[var(--ink)]/50">
-          UTC+7 &middot; Western Indonesian Time
-        </p>
-      </div>
-      <p className="font-mono text-[10px] uppercase tracking-wider text-[var(--ink)]/60">
-        Live UTC Feed
-      </p>
     </div>
   );
 }

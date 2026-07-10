@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import Parallax from "@/components/parallax";
 import ScrollReveal from "@/components/scroll-reveal";
+import ShaderBackground from "./blackhole";
 
 type Variant = "horizon" | "mountain" | "orbit" | "terminal";
 
@@ -28,7 +29,9 @@ export default function PainterlyMoment({
         className
       )}
     >
-      {variant === "horizon" && <Horizon />}
+      {variant === "horizon" && (
+        <ShaderBackground className="absolute inset-0 h-full w-full bg-black z-0" speed={0.4} />
+      )}
       {variant === "mountain" && <Mountain />}
       {variant === "orbit" && <Orbit />}
       {variant === "terminal" && <Terminal />}
@@ -53,66 +56,6 @@ export default function PainterlyMoment({
         </div>
       )}
     </section>
-  );
-}
-
-function Horizon() {
-  return (
-    <>
-      <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_50%_110%,#ff5b3f_0%,#a42417_40%,#220805_78%,#000_100%)]" />
-      {/* Sun */}
-      <Parallax speed={-140} className="absolute inset-0">
-        <div
-          aria-hidden
-          className="absolute left-1/2 top-[58%] -translate-x-1/2 -translate-y-1/2"
-          style={{
-            width: "min(62vw, 780px)",
-            aspectRatio: "1",
-            borderRadius: "9999px",
-            background:
-              "radial-gradient(circle at 50% 50%, #ffd6a0 0%, #ff9054 30%, rgba(255,121,71,0.15) 70%, transparent 72%)",
-            filter: "blur(0.5px)",
-          }}
-        />
-      </Parallax>
-      {/* Horizon lines */}
-      <svg
-        aria-hidden
-        className="absolute inset-x-0 bottom-0 h-[56%] w-full"
-        viewBox="0 0 1000 420"
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <linearGradient id="gridFade" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#fff" stopOpacity="0" />
-            <stop offset="100%" stopColor="#fff" stopOpacity="0.35" />
-          </linearGradient>
-          <mask id="gridMask">
-            <rect width="1000" height="420" fill="url(#gridFade)" />
-          </mask>
-        </defs>
-        <g mask="url(#gridMask)" stroke="#ffe6cc" strokeWidth="0.6">
-          {Array.from({ length: 22 }).map((_, i) => {
-            const y = (i / 21) ** 2.4 * 420;
-            return <line key={i} x1="0" x2="1000" y1={y} y2={y} />;
-          })}
-          {Array.from({ length: 31 }).map((_, i) => {
-            const x = 500 + (i - 15) * 80;
-            return <line key={i} x1="500" x2={x} y1="0" y2="420" />;
-          })}
-        </g>
-      </svg>
-      {/* Atmosphere */}
-      <div
-        aria-hidden
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(to bottom, rgba(10,5,5,0.15) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.55) 100%)",
-        }}
-      />
-      <Noise />
-    </>
   );
 }
 

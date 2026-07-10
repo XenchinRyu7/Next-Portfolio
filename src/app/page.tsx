@@ -205,7 +205,7 @@ export default async function Home() {
       <PainterlyMoment
         variant="horizon"
         kicker="§ Cutscene · 03"
-        caption="The next decade of software writes itself. I build the scaffolding that lets it."
+        caption="Beyond the singularity, the old rules of programming dissolve. I architect the entangled nodes and superposed agents that redefine how humans and machines collide."
       />
 
       {/* ═══════════════ SCENE 05 · WORK POSTERS ═══════════════ */}

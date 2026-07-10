@@ -53,7 +53,7 @@ export default function CanvasCard() {
       const mouse = mouseRef.current;
 
       // Draw connections
-      ctx.strokeStyle = "rgba(42, 15, 8, 0.08)";
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
       ctx.lineWidth = 0.6;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
@@ -72,7 +72,7 @@ export default function CanvasCard() {
 
       // Draw & Update Particles
       particles.forEach((p) => {
-        ctx.fillStyle = "rgba(42, 15, 8, 0.4)";
+        ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fill();
@@ -135,18 +135,18 @@ export default function CanvasCard() {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={handleMouseLeave}
-      className="relative h-full w-full overflow-hidden rounded-xl border border-[var(--ink)]/15 bg-[var(--bone)] p-5 transition-colors hover:border-[var(--ink)]"
+      className="relative h-full w-full overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] backdrop-blur-md p-5 transition-colors hover:border-white/30 text-white"
     >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full pointer-events-none" />
 
       <div className="relative z-10 flex h-full flex-col justify-between">
         <div>
-          <span className="label text-[var(--mute)]">§ Live Sandbox</span>
-          <h3 className="mt-3 font-serif text-xl italic leading-tight text-[var(--ink)]">
+          <span className="label text-white/40">§ Live Sandbox</span>
+          <h3 className="mt-3 font-serif text-xl italic leading-tight text-white">
             Interactive Particles
           </h3>
         </div>
-        <p className="mt-6 font-mono text-[11px] uppercase tracking-wider text-[var(--ink)]/60">
+        <p className="mt-6 font-mono text-[11px] uppercase tracking-wider text-white/40">
           {hovered ? "Hovering · Gravitational pull" : "Idle · Constellation drift"}
         </p>
       </div>

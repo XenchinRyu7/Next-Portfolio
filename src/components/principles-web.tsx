@@ -41,7 +41,7 @@ const principles: Principle[] = [
   },
   {
     title: "Agents, not Apps",
-    body: "The next decade of software writes itself. I build the scaffolding that lets it.",
+    body: "Beyond the singularity, the old rules of programming dissolve. I architect the entangled nodes and superposed agents that redefine how humans and machines collide.",
     x: 52,
     y: 84,
   },
