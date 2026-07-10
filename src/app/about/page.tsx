@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import Marquee from "@/components/marquee";
 import { skillGroups, marqueeWords } from "@/data/skills";
 
@@ -53,15 +54,16 @@ export default function AboutPage() {
 
       <section className="mx-auto mt-24 grid max-w-[1400px] grid-cols-12 gap-6 px-5 md:px-10">
         <div className="col-span-12 md:col-span-5">
-          <div className="relative aspect-[4/5] w-full overflow-hidden border border-[var(--ink)] bg-[var(--bone)]">
-            <div className="absolute inset-0 hatch opacity-40" aria-hidden />
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--ink)]/70">
-                Portrait / Placeholder
-              </p>
-              <p className="mt-2 font-serif text-5xl italic">S.R.A.</p>
-            </div>
-            <div className="absolute left-3 top-3 chip bg-[var(--bone)]">
+          <div className="relative aspect-[4/5] w-full overflow-hidden border border-[var(--ink)] bg-[var(--bone)] group">
+            <Image
+              src="/img/profile_picture.jpeg"
+              alt="Saeful Rohman"
+              fill
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              sizes="(max-w-768px) 100vw, 40vw"
+              priority
+            />
+            <div className="absolute left-3 top-3 chip bg-[var(--bone)] z-10">
               SRA · 002
             </div>
           </div>
