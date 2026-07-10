@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
-
+ 
 export default function Nav() {
-  const path = usePathname();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
