@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import clsx from "clsx";
 import MistTitle from "@/components/mist-title";
 import PainterlyMoment from "@/components/painterly-moment";
+import ProjectGallery from "@/components/project-gallery";
 import type { Project } from "@/data/projects";
 import {
   getAdjacentShowcaseProjects,
@@ -47,6 +48,7 @@ export default async function ProjectDetailPage({ params }: { params: Params }) 
   if (!project) return notFound();
   const { prev, next } = await getAdjacentShowcaseProjects(params.slug);
   const variant = variantByAccent[project.accent];
+  const images = project.images ?? [];
 
 
   return (
@@ -93,7 +95,7 @@ export default async function ProjectDetailPage({ params }: { params: Params }) 
         <PainterlyMoment
           variant={variant}
           kicker={`§ Cutscene · ${project.kind}`}
-          caption={project.description}
+          caption={project.tagline}
         />
       </section>
 
@@ -107,23 +109,9 @@ export default async function ProjectDetailPage({ params }: { params: Params }) 
         </dl>
       </section>
 
-      {project.images && project.images.length > 0 && (
+      {images.length > 0 && (
         <section className="mx-auto mt-14 max-w-[1400px] px-5 md:px-10">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            {project.images.slice(0, 2).map((image, index) => (
-              <div
-                key={`${image.url}-${index}`}
-                className="relative aspect-[16/10] overflow-hidden border border-[var(--ink)] bg-[var(--ink)]"
-              >
-                <div
-                  aria-label={image.alt ?? `${project.title} image ${index + 1}`}
-                  role="img"
-                  className="h-full w-full bg-cover bg-center"
-                  style={{ backgroundImage: `url(${image.url})` }}
-                />
-              </div>
-            ))}
-          </div>
+          <ProjectGallery images={images} title={project.title} />
         </section>
       )}
 

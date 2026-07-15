@@ -180,7 +180,7 @@ function mapApiProject(
 
 function getApiBaseUrl() {
   const isDev = process.env.NODE_ENV === "development";
-  const defaultUrl = isDev ? "http://localhost:3001" : DEFAULT_API_BASE_URL;
+  const defaultUrl = isDev ? "https://api.saefulrohman.dev" : DEFAULT_API_BASE_URL;
   return (
     process.env.PORTFOLIO_API_URL ??
     process.env.NEXT_PUBLIC_PORTFOLIO_API_URL ??
