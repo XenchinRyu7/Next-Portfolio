@@ -8,6 +8,7 @@ import BentoGrid from "@/components/bento-grid";
 import CurtainIntro from "@/components/curtain-intro";
 import ScrollReveal from "@/components/scroll-reveal";
 import Parallax from "@/components/parallax";
+import CVSection from "@/components/cv-section";
 import { getShowcaseProjects } from "@/lib/project-api";
 
 export default async function Home() {
@@ -246,6 +247,8 @@ export default async function Home() {
         kicker="§ End credits"
         caption="Roll credits. (Your project starts in the next scene.)"
       />
+
+      <CVSection />
 
       {/* ═══════════════ SCENE 06 · CTA ═══════════════ */}
       <section className="relative mx-auto max-w-[1400px] px-5 py-32 md:px-10 md:py-48">

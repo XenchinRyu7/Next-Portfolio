@@ -15,10 +15,10 @@ export default function Footer() {
               <span className="text-[var(--acid)]">properly.</span>
             </h3>
             <Link
-              href="mailto:saefulrohmandevelopers@gmail.com"
+              href="mailto:work@saefulrohman.dev"
               className="mt-6 inline-flex items-center gap-3 border-b border-[var(--bone)] pb-1 font-mono text-sm uppercase tracking-[0.2em] transition-colors hover:text-[var(--acid)]"
             >
-              saefulrohmandevelopers@gmail.com →
+              work@saefulrohman.dev →
             </Link>
           </div>
 
@@ -77,17 +77,17 @@ export default function Footer() {
               </li>
               <li>
                 <a
-                  href="https://x.com/"
+                  href="https://www.instagram.com/saefulrdevs/"
                   target="_blank"
                   rel="noreferrer"
                   className="hover:text-[var(--acid)]"
                 >
-                  X / Twitter ↗
+                  Instagram ↗
                 </a>
               </li>
               <li>
                 <a
-                  href="mailto:saefulrohmandevelopers@gmail.com"
+                  href="mailto:work@saefulrohman.dev"
                   className="hover:text-[var(--acid)]"
                 >
                   Email ↗

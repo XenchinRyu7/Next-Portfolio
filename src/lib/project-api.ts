@@ -29,7 +29,7 @@ type ApiProject = {
   highlight?: boolean;
 };
 
-const DEFAULT_API_BASE_URL = "https://saefulrdevs-portfolio-api.vercel.app";
+const DEFAULT_API_BASE_URL = "https://api.saefulrohman.dev";
 const accents: Project["accent"][] = ["acid", "cobalt", "plum", "ink"];
 
 export async function getShowcaseProjects(): Promise<Project[]> {

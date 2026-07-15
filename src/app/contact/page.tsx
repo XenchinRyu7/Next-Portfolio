@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ContactForm from "@/components/contact-form";
+import CVSection from "@/components/cv-section";
 
 export const metadata: Metadata = {
   title: "Contact — Saeful Rohman",
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 const channels = [
-  { k: "Email", v: "saefulrohmandevelopers@gmail.com", href: "mailto:saefulrohmandevelopers@gmail.com" },
+  { k: "Email", v: "work@saefulrohman.dev", href: "mailto:work@saefulrohman.dev" },
   { k: "GitHub", v: "@XenchinRyu7", href: "https://github.com/XenchinRyu7" },
   { k: "LinkedIn", v: "saeful-rohman", href: "https://www.linkedin.com/in/saeful-rohman" },
   { k: "Location", v: "Indonesia · UTC+7", href: "" },
@@ -84,6 +85,10 @@ export default function ContactPage() {
           <ContactForm />
         </div>
       </section>
+
+      <div className="mt-16 md:mt-24">
+        <CVSection />
+      </div>
     </>
   );
 }

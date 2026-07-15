@@ -34,7 +34,7 @@ export default function CinematicWork({
     <Link
       href={`/work/${project.slug}`}
       data-parallax-scope
-      className="group relative block min-h-[90vh] w-full overflow-hidden border-b border-white/10 bg-[#050505] text-[#fbfbfa] transition-colors duration-500 hover:bg-[#080808]"
+      className="group relative block w-full overflow-hidden border-b border-white/10 bg-[#050505] text-[#fbfbfa] transition-colors duration-500 hover:bg-[#080808]"
     >
       {/* Background radial glow */}
       <div 
@@ -134,10 +134,10 @@ export default function CinematicWork({
             className="relative block h-px w-16 transition-[width] duration-500 group-hover:w-28"
             style={{ background: "rgba(255,255,255,0.4)" }}
           />
-          <span>Enter case study</span>
-          <span aria-hidden className="transition-transform duration-500 group-hover:translate-x-1.5" style={{ color: c.textAccent }}>
+          <span>Enter case study ↗</span>
+          {/* <span aria-hidden className="transition-transform duration-500 group-hover:translate-x-1.5" style={{ color: c.textAccent }}>
             ↗
-          </span>
+          </span> */}
         </ScrollReveal>
       </div>
     </Link>

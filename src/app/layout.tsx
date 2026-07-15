@@ -31,6 +31,9 @@ export const metadata: Metadata = {
   title: "Saeful Rohman — Informatics Engineering / AI / Fullstack",
   description:
     "Portfolio of Saeful Rohman— Informatics Engineering graduate (GPA 3.83), mobile & fullstack developer, game dev, and AI engineer building autonomous agents and automation systems.",
+  icons: {
+    icon: "/favicon.svg",
+  },
   openGraph: {
     title: "Saeful Rohman",
     description:
