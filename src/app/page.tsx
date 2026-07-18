@@ -10,13 +10,16 @@ import ScrollReveal from "@/components/scroll-reveal";
 import Parallax from "@/components/parallax";
 import CVSection from "@/components/cv-section";
 import GalleryTeaser from "@/components/gallery-teaser";
+import CertificatesTicker from "@/components/certificates-ticker";
 import { getShowcaseProjects } from "@/lib/project-api";
 import { getGalleryItems } from "@/lib/gallery-api";
+import { getCertificates } from "@/lib/certificate-api";
 
 export default async function Home() {
-  const [projects, allGalleryItems] = await Promise.all([
+  const [projects, allGalleryItems, certificates] = await Promise.all([
     getShowcaseProjects(),
     getGalleryItems({ limit: 100 }),
+    getCertificates(),
   ]);
 
   let highlightItems = allGalleryItems.filter((item) => item.highlight === true);
@@ -260,6 +263,8 @@ export default async function Home() {
       />
 
       <GalleryTeaser items={sortedHighlights} />
+
+      <CertificatesTicker certificates={certificates} />
 
       <CVSection />
 

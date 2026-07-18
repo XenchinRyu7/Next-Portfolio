@@ -28,7 +28,7 @@ type ApiResponse<T> = {
   timestamp: string;
 };
 
-const DEFAULT_API_BASE_URL = "https://saefulrdevs-portfolio-api.vercel.app";
+const DEFAULT_API_BASE_URL = "https://api.saefulrohman.dev";
 
 function getApiBaseUrl() {
   const isDev = process.env.NODE_ENV === "development";

@@ -87,6 +87,26 @@ export default function Footer() {
               </li>
               <li>
                 <a
+                  href="http://g.dev/SaefulR"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-[var(--acid)]"
+                >
+                  Google Developer ↗
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://www.cloudskillsboost.google/public_profiles/c05ccf07-66ab-4eb8-abce-2cc38a173704"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-[var(--acid)]"
+                >
+                  Cloud Skills Boost ↗
+                </a>
+              </li>
+              <li>
+                <a
                   href="mailto:work@saefulrohman.dev"
                   className="hover:text-[var(--acid)]"
                 >
