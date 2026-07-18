@@ -12,11 +12,15 @@ type ProjectImage = {
 export default function ProjectGallery({
   images,
   title,
+  maxImages,
 }: {
   images: ProjectImage[];
   title: string;
+  maxImages?: number;
 }) {
   const [activeImage, setActiveImage] = useState<string | null>(null);
+
+  const displayImages = maxImages ? images.slice(0, maxImages) : images;
 
   // Esc key listener and body scroll lock
   useEffect(() => {
@@ -39,38 +43,63 @@ export default function ProjectGallery({
 
   return (
     <>
-      <div
-        className={clsx(
-          "grid gap-4",
-          images.length === 1 && "grid-cols-1",
-          images.length === 2 && "grid-cols-1 md:grid-cols-2",
-          images.length === 3 && "grid-cols-1 md:grid-cols-3",
-          images.length >= 4 && "grid-cols-1 md:grid-cols-2"
-        )}
-      >
-        {images.slice(0, 4).map((image, index) => (
-          <div
-            key={`${image.url}-${index}`}
-            onClick={() => setActiveImage(image.url)}
-            className={clsx(
-              "group relative overflow-hidden border border-[var(--ink)] bg-[var(--ink)] cursor-zoom-in",
-              images.length === 1 ? "aspect-[21/9]" : "aspect-[16/10]"
-            )}
-          >
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {displayImages.map((image, index) => {
+          let spanClass = "col-span-1";
+          let aspectClass = "aspect-[16/10]";
+
+          if (displayImages.length === 1) {
+            spanClass = "md:col-span-3";
+            aspectClass = "aspect-[21/9]";
+          } else if (displayImages.length === 2) {
+            if (index === 0) {
+              spanClass = "md:col-span-2";
+            } else {
+              spanClass = "md:col-span-1";
+            }
+          } else if (displayImages.length === 3) {
+            if (index === 0) {
+              spanClass = "md:col-span-2";
+            } else if (index === 1) {
+              spanClass = "md:col-span-1";
+            } else {
+              spanClass = "md:col-span-3";
+              aspectClass = "aspect-[21/9] md:aspect-[25/9]";
+            }
+          } else {
+            const rowPattern = index % 4;
+            if (rowPattern === 0 || rowPattern === 3) {
+              spanClass = "md:col-span-2";
+            } else {
+              spanClass = "md:col-span-1";
+            }
+          }
+
+          return (
             <div
-              aria-label={image.alt ?? `${title} image ${index + 1}`}
-              role="img"
-              className="h-full w-full bg-cover bg-center transition-transform duration-700 hover:scale-[1.03]"
-              style={{ backgroundImage: `url(${image.url})` }}
-            />
-            {/* Hover overlay with maximize icon */}
-            <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center">
-              <div className="rounded-full bg-black/40 backdrop-blur-md p-3 text-white border border-white/10 transition-transform duration-300 scale-90 group-hover:scale-100">
-                <FiMaximize2 className="h-5 w-5" />
+              key={`${image.url}-${index}`}
+              onClick={() => setActiveImage(image.url)}
+              className={clsx(
+                "group relative overflow-hidden border border-[var(--ink)] bg-[var(--ink)] cursor-zoom-in",
+                spanClass,
+                aspectClass
+              )}
+            >
+              <div
+                aria-label={image.alt ?? `${title} image ${index + 1}`}
+                role="img"
+                className="h-full w-full bg-cover bg-center transition-transform duration-700 hover:scale-[1.03]"
+                style={{ backgroundImage: `url(${image.url})` }}
+              />
+              {/* Hover overlay with maximize icon */}
+              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center">
+                <div className="rounded-full bg-black/40 backdrop-blur-md p-3 text-white border border-white/10 transition-transform duration-300 scale-90 group-hover:scale-100">
+                  <FiMaximize2 className="h-5 w-5" />
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Lightbox Modal */}

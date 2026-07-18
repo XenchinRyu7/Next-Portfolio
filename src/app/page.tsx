@@ -9,10 +9,21 @@ import CurtainIntro from "@/components/curtain-intro";
 import ScrollReveal from "@/components/scroll-reveal";
 import Parallax from "@/components/parallax";
 import CVSection from "@/components/cv-section";
+import GalleryTeaser from "@/components/gallery-teaser";
 import { getShowcaseProjects } from "@/lib/project-api";
+import { getGalleryItems } from "@/lib/gallery-api";
 
 export default async function Home() {
-  const projects = await getShowcaseProjects();
+  const [projects, allGalleryItems] = await Promise.all([
+    getShowcaseProjects(),
+    getGalleryItems({ limit: 100 }),
+  ]);
+
+  let highlightItems = allGalleryItems.filter((item) => item.highlight === true);
+  if (highlightItems.length === 0) {
+    highlightItems = allGalleryItems;
+  }
+  const sortedHighlights = [...highlightItems].sort((a, b) => b.date.localeCompare(a.date));
 
   return (
     <>
@@ -247,6 +258,8 @@ export default async function Home() {
         kicker="§ End credits"
         caption="Roll credits. (Your project starts in the next scene.)"
       />
+
+      <GalleryTeaser items={sortedHighlights} />
 
       <CVSection />
 

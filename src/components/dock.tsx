@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
-import { FiHome, FiBriefcase, FiUser, FiMail, FiTerminal } from "react-icons/fi";
+import { FiHome, FiBriefcase, FiImage, FiUser, FiMail, FiTerminal } from "react-icons/fi";
 import type { IconType } from "react-icons";
 
 type DockItem = {
@@ -16,6 +16,7 @@ type DockItem = {
 const items: DockItem[] = [
   { icon: FiHome, label: "Home", href: "/" },
   { icon: FiBriefcase, label: "Work", href: "/work" },
+  { icon: FiImage, label: "Gallery", href: "/gallery" },
   { icon: FiUser, label: "About", href: "/about" },
   { icon: FiMail, label: "Contact", href: "/contact" },
   { icon: FiTerminal, label: "Terminal", href: "#terminal" },
