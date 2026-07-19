@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
@@ -31,6 +31,16 @@ export default function Dock() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [scales, setScales] = useState<number[]>(new Array(items.length).fill(1));
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const baseSize = isMobile ? 32 : 40;
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const container = containerRef.current;
@@ -58,13 +68,13 @@ export default function Dock() {
   };
 
   return (
-    <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 pointer-events-none">
+    <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 pointer-events-none max-w-[95vw] w-fit flex justify-center">
       <div
         ref={containerRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="pointer-events-auto flex items-end gap-3 rounded-2xl border border-[var(--ink)]/10 bg-[var(--bone)]/70 px-4 py-3 shadow-[0_20px_50px_rgba(0,0,0,0.15)] backdrop-blur-md transition-all duration-300"
-        style={{ height: "64px" }}
+        className="pointer-events-auto flex flex-wrap md:flex-nowrap items-center justify-center md:items-end gap-2 md:gap-3 rounded-2xl border border-[var(--ink)]/10 bg-[var(--bone)]/70 px-3 py-2 md:px-4 md:py-3 shadow-[0_20px_50px_rgba(0,0,0,0.15)] backdrop-blur-md transition-all duration-300 w-fit max-w-[90vw]"
+        style={{ height: isMobile ? "auto" : "64px" }}
       >
         {items.map((item, idx) => {
           const Icon = item.icon;
@@ -82,9 +92,9 @@ export default function Dock() {
                 : "bg-[var(--bone)] border-[var(--ink)]/15 text-[var(--ink)]/75 hover:bg-[var(--acid)] hover:border-[var(--ink)]"
             ),
             style: {
-              width: `${40 * scale}px`,
-              height: `${40 * scale}px`,
-              marginBottom: `${(scale - 1) * 8}px`,
+              width: `${baseSize * scale}px`,
+              height: `${baseSize * scale}px`,
+              marginBottom: isMobile ? "0px" : `${(scale - 1) * 8}px`,
             },
           };
 

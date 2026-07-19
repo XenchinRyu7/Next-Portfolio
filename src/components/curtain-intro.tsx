@@ -237,16 +237,7 @@ export default function CurtainIntro() {
           />
         </div>
 
-        {/* Centre split seam (thin glowing line) */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute left-1/2 top-0 z-20 h-full w-px"
-          style={{
-            background:
-              "linear-gradient(to bottom, transparent, rgba(255,61,46,0.8), transparent)",
-            opacity: Math.min(1, progress * 3),
-          }}
-        />
+
 
         {/* WELCOME copy (over curtains) */}
         <div

@@ -40,7 +40,8 @@ export default function GalleryTeaser({ items }: { items: GalleryItem[] }) {
         </p>
       </div>
 
-      <div className="grid grid-cols-12 gap-8 items-stretch">
+      {/* Desktop Split Grid Layout (Hidden on Mobile) */}
+      <div className="hidden lg:grid grid-cols-12 gap-8 items-stretch">
         {/* Left Side: Cinematic Viewport of Highlighted Event */}
         <div className="col-span-12 lg:col-span-7 flex flex-col justify-between">
           <div className="relative aspect-[16/10] w-full overflow-hidden border border-[var(--ink)] bg-[var(--ink)] shadow-md">
@@ -134,6 +135,63 @@ export default function GalleryTeaser({ items }: { items: GalleryItem[] }) {
               <FiArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
           </div>
+        </div>
+      </div>
+
+      {/* Mobile/Tablet Combined Card Carousel (Visible only on Mobile) */}
+      <div className="block lg:hidden space-y-6">
+        <div className="border border-[var(--ink)] bg-[var(--bone)] p-4 shadow-sm">
+          {/* Combined Image Viewport */}
+          <div className="relative aspect-[16/10] w-full overflow-hidden border border-[var(--ink)] bg-[var(--ink)]">
+            <div
+              className="absolute inset-0 bg-cover bg-center transition-all duration-500"
+              style={{ backgroundImage: `url(${activeItem.images?.[0]?.url})` }}
+            />
+            <div className="absolute bottom-4 right-4 font-mono text-[9px] uppercase tracking-wider text-white bg-black/60 px-2 py-0.5 rounded border border-white/10">
+              {activeIndex + 1} / {teaserItems.length}
+            </div>
+          </div>
+
+          {/* Text Details */}
+          <div className="mt-6 space-y-3">
+            <div className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-wider text-[var(--mute)]">
+              <FiCalendar className="h-3.5 w-3.5" />
+              <span>{activeItem.date}</span>
+            </div>
+            <h3 className="font-serif text-xl italic text-[var(--ink)] leading-snug">
+              {activeItem.title}
+            </h3>
+            <p className="text-[13px] leading-relaxed text-[var(--ink)]/80">
+              {activeItem.description}
+            </p>
+          </div>
+        </div>
+
+        {/* Navigation Controls */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setActiveIndex((prev) => (prev > 0 ? prev - 1 : teaserItems.length - 1))}
+              className="flex h-11 w-11 items-center justify-center border border-[var(--ink)] bg-[var(--bone)] text-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--bone)] transition-colors font-mono text-sm active:scale-95"
+              aria-label="Previous event"
+            >
+              &larr;
+            </button>
+            <button
+              onClick={() => setActiveIndex((prev) => (prev < teaserItems.length - 1 ? prev + 1 : 0))}
+              className="flex h-11 w-11 items-center justify-center border border-[var(--ink)] bg-[var(--bone)] text-[var(--ink)] hover:bg-[var(--ink)] hover:text-[var(--bone)] transition-colors font-mono text-sm active:scale-95"
+              aria-label="Next event"
+            >
+              &rarr;
+            </button>
+          </div>
+
+          <Link
+            href="/gallery"
+            className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest border border-[var(--ink)] bg-[var(--ink)] text-[var(--bone)] px-5 py-3.5 hover:bg-[var(--acid)] hover:text-[var(--ink)] transition-all duration-300"
+          >
+            Explore Gallery &rarr;
+          </Link>
         </div>
       </div>
     </section>
