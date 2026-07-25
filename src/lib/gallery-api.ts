@@ -31,67 +31,14 @@ type ApiResponse<T> = {
 const DEFAULT_API_BASE_URL = "https://api.saefulrohman.dev";
 
 function getApiBaseUrl() {
-  const isDev = process.env.NODE_ENV === "development";
-  const defaultUrl = isDev ? "http://localhost:3001" : DEFAULT_API_BASE_URL;
   return (
     process.env.PORTFOLIO_API_URL ??
     process.env.NEXT_PUBLIC_PORTFOLIO_API_URL ??
-    defaultUrl
+    DEFAULT_API_BASE_URL
   ).replace(/\/$/, "");
 }
 
-// Fallback data if backend returns empty or is offline
-const fallbackGallery: GalleryItem[] = [
-  {
-    id: "fb-1",
-    title: "Speaker at DevFest Jakarta 2025",
-    description: "Menjadi pembicara di sesi Web & Frontend track membahas performa Next.js 15 dan React Compiler di hadapan ratusan developer.",
-    date: "2025-11",
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=1470&auto=format&fit=crop",
-        alt: "Speaking at DevFest Jakarta 2025 on Next.js 15"
-      },
-      {
-        url: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?q=80&w=1470&auto=format&fit=crop",
-        alt: "Q&A session with attendees at DevFest"
-      }
-    ],
-    createdAt: "2026-07-19T03:22:15.000Z",
-    updatedAt: "2026-07-19T03:22:15.000Z",
-    highlight: true
-  },
-  {
-    id: "fb-2",
-    title: "Trainer at Modern React Workshop 2025",
-    description: "Mengadakan pelatihan intensif hands-on workshop mengenai State Management, Server Actions, dan performa rendering React modern.",
-    date: "2025-08",
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1470&auto=format&fit=crop",
-        alt: "Mentoring engineers on React architectures"
-      }
-    ],
-    createdAt: "2026-07-19T03:22:15.000Z",
-    updatedAt: "2026-07-19T03:22:15.000Z",
-    highlight: true
-  },
-  {
-    id: "fb-3",
-    title: "Winner at AI Agent Hackathon 2026",
-    description: "Memenangkan juara pertama dalam merancang autonomous agent swarm yang mampu melakukan debugging kode otomatis secara real-time.",
-    date: "2026-02",
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1470&auto=format&fit=crop",
-        alt: "Presenting the autonomous agent prototype"
-      }
-    ],
-    createdAt: "2026-07-19T03:22:15.000Z",
-    updatedAt: "2026-07-19T03:22:15.000Z",
-    highlight: true
-  }
-];
+const fallbackGallery: GalleryItem[] = [];
 
 export async function getGalleryItems(params?: {
   q?: string;

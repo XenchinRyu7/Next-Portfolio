@@ -179,12 +179,10 @@ function mapApiProject(
 }
 
 function getApiBaseUrl() {
-  const isDev = process.env.NODE_ENV === "development";
-  const defaultUrl = isDev ? "https://localhost:3000" : DEFAULT_API_BASE_URL;
   return (
     process.env.PORTFOLIO_API_URL ??
     process.env.NEXT_PUBLIC_PORTFOLIO_API_URL ??
-    defaultUrl
+    DEFAULT_API_BASE_URL
   ).replace(/\/$/, "");
 }
 
