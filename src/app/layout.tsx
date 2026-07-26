@@ -28,17 +28,53 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Saeful Rohman — Informatics Engineering / AI / Fullstack",
+  metadataBase: new URL("https://www.saefulrohman.dev"),
+  title: {
+    default: "Saeful Rohman — Fullstack Software Engineer / AI / Game Developer",
+    template: "%s | Saeful Rohman",
+  },
   description:
-    "Portfolio of Saeful Rohman— Informatics Engineering graduate (GPA 3.83), mobile & fullstack developer, game dev, and AI engineer building autonomous agents and automation systems.",
-  icons: {
-    icon: "/favicon.svg",
+    "Portfolio of Saeful Rohman — a fullstack software engineer active in game development and AI engineering building autonomous agents.",
+  keywords: [
+    "Saeful Rohman",
+    "Software Engineer",
+    "Fullstack Developer",
+    "AI Engineer",
+    "Autonomous Agents",
+    "Game Developer",
+    "Next.js Portfolio",
+    "Informatics Engineering",
+  ],
+  authors: [{ name: "Saeful Rohman", url: "https://www.saefulrohman.dev" }],
+  creator: "Saeful Rohman",
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   openGraph: {
-    title: "Saeful Rohman",
+    title: "Saeful Rohman — Fullstack Software Engineer",
     description:
-      "Informatics Engineering graduate (GPA 3.83) · mobile, fullstack web, game, and AI engineering. Building agents, automations and experiences.",
+      "A fullstack software engineer active in game development and AI engineering building autonomous agents.",
+    url: "https://www.saefulrohman.dev",
+    siteName: "Saeful Rohman Portfolio",
+    locale: "en_US",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Saeful Rohman — Fullstack Software Engineer",
+    description:
+      "A fullstack software engineer active in game development and AI engineering building autonomous agents.",
   },
 };
 
