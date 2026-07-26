@@ -52,32 +52,6 @@ const icons: { I: IconType; label: string; color: string }[] = [
 export default function CurtainIntro() {
   const rootRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0); // 0 = fully closed, 1 = fully open
-  const [rotationOffset, setRotationOffset] = useState<number[]>(new Array(18).fill(0));
-
-  // Animasi rotasi orbit (tata surya) berkelanjutan
-  useEffect(() => {
-    let rafId: number;
-    let lastTime = performance.now();
-
-    const animate = (now: number) => {
-      const delta = (now - lastTime) / 1000; // dalam detik
-      lastTime = now;
-
-      setRotationOffset((prev) =>
-        prev.map((val, i) => {
-          const ring = i % 3; // 0 = inner, 1 = middle, 2 = outer
-          // Kecepatan putar (rad/detik), arah berlawanan untuk ring tengah agar estetik
-          const speed = ring === 0 ? 0.05 : ring === 1 ? -0.025 : 0.012;
-          return val + speed * delta;
-        })
-      );
-
-      rafId = requestAnimationFrame(animate);
-    };
-
-    rafId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafId);
-  }, []);
 
   // Handler Scroll untuk Tirai Curtain
   useEffect(() => {
@@ -141,8 +115,7 @@ export default function CurtainIntro() {
             const radiusY = radiusX * 0.73; // sedikit pipih vertikal agar muat di viewport
 
             // Sudut awal yang diinterleave (selang-seling) agar tersebar merata
-            const baseAngle = (ringIndex * (2 * Math.PI / 6)) + (ring === 1 ? Math.PI / 6 : 0);
-            const angle = baseAngle + rotationOffset[i];
+            const angle = (ringIndex * (2 * Math.PI / 6)) + (ring === 1 ? Math.PI / 6 : 0);
 
             // Hitung posisi koordinat X & Y di layar (%)
             const posX = 50 + radiusX * Math.cos(angle);

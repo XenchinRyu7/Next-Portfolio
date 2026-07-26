@@ -75,7 +75,11 @@ export async function getGalleryItems(params?: {
     }
 
     return json.data;
-  } catch (error) {
+  } catch (error: unknown) {
+    const err = error as { digest?: string; message?: string };
+    if (err.digest === "DYNAMIC_SERVER_USAGE" || err.message?.includes("Dynamic server usage")) {
+      throw error;
+    }
     console.error("Failed to fetch gallery items, using fallback data:", error);
     return filterLocalGallery(fallbackGallery, q);
   } finally {
@@ -109,7 +113,11 @@ export async function getGalleryItem(id: string): Promise<GalleryItem | undefine
         return json.data;
       }
     }
-  } catch (error) {
+  } catch (error: unknown) {
+    const err = error as { digest?: string; message?: string };
+    if (err.digest === "DYNAMIC_SERVER_USAGE" || err.message?.includes("Dynamic server usage")) {
+      throw error;
+    }
     console.warn(`Direct fetch for gallery item ${id} failed, falling back to scanning list:`, error);
   } finally {
     clearTimeout(timeout);

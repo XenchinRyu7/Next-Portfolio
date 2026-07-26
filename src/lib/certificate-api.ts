@@ -57,7 +57,11 @@ export async function getCertificates(): Promise<Certificate[]> {
     }
 
     return json.data;
-  } catch (error) {
+  } catch (error: unknown) {
+    const err = error as { digest?: string; message?: string };
+    if (err.digest === "DYNAMIC_SERVER_USAGE" || err.message?.includes("Dynamic server usage")) {
+      throw error;
+    }
     console.error("Failed to fetch certificates from API, using fallback data:", error);
     return fallbackCertificates;
   } finally {

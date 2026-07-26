@@ -40,7 +40,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
     return [...routes, ...projectUrls, ...galleryUrls];
-  } catch (error) {
+  } catch (error: unknown) {
+    const err = error as { digest?: string; message?: string };
+    if (err.digest === "DYNAMIC_SERVER_USAGE" || err.message?.includes("Dynamic server usage")) {
+      throw error;
+    }
     console.error("Failed to generate dynamic sitemap, returning static routes:", error);
     return routes;
   }
