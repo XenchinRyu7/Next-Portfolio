@@ -1,7 +1,11 @@
 import clsx from "clsx";
 import Parallax from "@/components/parallax";
 import ScrollReveal from "@/components/scroll-reveal";
-import ShaderBackground from "./blackhole";
+import dynamic from "next/dynamic";
+
+const ShaderBackground = dynamic(() => import("./blackhole"), {
+  ssr: false,
+});
 
 type Variant = "horizon" | "mountain" | "orbit" | "terminal";
 
