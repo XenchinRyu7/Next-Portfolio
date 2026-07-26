@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import { FiCalendar, FiArrowRight } from "react-icons/fi";
@@ -50,12 +51,21 @@ export default function GalleryTeaser({ items }: { items: GalleryItem[] }) {
               <div
                 key={`img-${item.id}`}
                 className={clsx(
-                  "absolute inset-0 bg-cover bg-center transition-all duration-700 ease-in-out",
+                  "absolute inset-0 transition-all duration-700 ease-in-out",
                   idx === activeIndex ? "opacity-100 scale-100" : "opacity-0 scale-[1.03] pointer-events-none"
                 )}
-                style={{ backgroundImage: `url(${item.images?.[0]?.url})` }}
                 aria-hidden={idx !== activeIndex}
-              />
+              >
+                {item.images?.[0] && (
+                  <Image
+                    src={item.images[0].url}
+                    alt={item.images[0].alt || item.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-w-1024px) 100vw, 60vw"
+                  />
+                )}
+              </div>
             ))}
             
             {/* Bottom info glass overlay */}
@@ -143,10 +153,17 @@ export default function GalleryTeaser({ items }: { items: GalleryItem[] }) {
         <div className="border border-[var(--ink)] bg-[var(--bone)] p-4 shadow-sm">
           {/* Combined Image Viewport */}
           <div className="relative aspect-[16/10] w-full overflow-hidden border border-[var(--ink)] bg-[var(--ink)]">
-            <div
-              className="absolute inset-0 bg-cover bg-center transition-all duration-500"
-              style={{ backgroundImage: `url(${activeItem.images?.[0]?.url})` }}
-            />
+            <div className="absolute inset-0 transition-all duration-500">
+              {activeItem.images?.[0] && (
+                <Image
+                  src={activeItem.images[0].url}
+                  alt={activeItem.images[0].alt || activeItem.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-w-768px) 100vw, 50vw"
+                />
+              )}
+            </div>
             <div className="absolute bottom-4 right-4 font-mono text-[9px] uppercase tracking-wider text-white bg-black/60 px-2 py-0.5 rounded border border-white/10">
               {activeIndex + 1} / {teaserItems.length}
             </div>

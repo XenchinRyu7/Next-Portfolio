@@ -325,22 +325,39 @@ const useShaderBackground = () => {
     resize();
     window.addEventListener("resize", resize);
     
+    let isVisible = true;
+    let animationFrameId: number | null = null;
+
     const loop = (now: number) => {
+      if (!isVisible) return;
       if (!rendererRef.current || !pointersRef.current) return;
       rendererRef.current.updateMouse(pointersRef.current.first);
       rendererRef.current.updatePointerCount(pointersRef.current.count);
       rendererRef.current.updatePointerCoords(pointersRef.current.coords);
       rendererRef.current.updateMove(pointersRef.current.move);
       rendererRef.current.render(now);
-      animationFrameRef.current = requestAnimationFrame(loop);
+      animationFrameId = requestAnimationFrame(loop);
     };
 
-    loop(0);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible) {
+          if (animationFrameId) cancelAnimationFrame(animationFrameId);
+          animationFrameId = requestAnimationFrame(loop);
+        } else {
+          if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        }
+      },
+      { threshold: 0.01 }
+    );
+    observer.observe(canvas);
     
     return () => {
       window.removeEventListener("resize", resize);
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+      observer.disconnect();
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
       }
       if (rendererRef.current) {
         rendererRef.current.reset();

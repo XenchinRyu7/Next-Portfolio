@@ -76,7 +76,7 @@ export default async function Home() {
           <div className="mt-20 grid grid-cols-12 gap-6 md:mt-32">
             <ScrollReveal className="col-span-12 md:col-span-7" stagger={0.1}>
               <p className="max-w-2xl text-balance font-serif text-[clamp(1.1rem,1.6vw,1.4rem)] italic leading-[1.4] text-[var(--ink)]/80">
-                Informatics Engineering graduate (GPA 3.83). I build at the intersection of{" "}
+                I’m a fullstack software engineer with broad expertise in other fields like game development and AI engineering building autonomous agents. I build at the intersection of{" "}
                 <span className="not-italic font-medium">mobile</span>,{" "}
                 <span className="not-italic font-medium">fullstack web</span>,{" "}
                 <span className="not-italic font-medium">games</span>, and{" "}

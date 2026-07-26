@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import type { Project } from "@/data/projects";
@@ -30,16 +31,17 @@ export default function ProjectCard({
           "relative aspect-[4/3] w-full overflow-hidden border-b border-[var(--ink)]",
           !project.images?.[0] && accent
         )}
-        style={
-          project.images?.[0]
-            ? {
-                backgroundImage: `url(${project.images[0].url})`,
-                backgroundPosition: "center",
-                backgroundSize: "cover",
-              }
-            : undefined
-        }
       >
+        {project.images?.[0] && (
+          <Image
+            src={project.images[0].url}
+            alt={project.images[0].alt || `Thumbnail of project ${project.title}`}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-w-768px) 100vw, 50vw"
+            priority={index < 2}
+          />
+        )}
         <div
           className={clsx(
             "absolute inset-0",

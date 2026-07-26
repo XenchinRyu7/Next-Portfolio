@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { FiX, FiMaximize2 } from "react-icons/fi";
@@ -24,49 +25,44 @@ export default function ProjectGallery({
 
   // Esc key listener and body scroll lock
   useEffect(() => {
-    if (!activeImage) return;
-
+    if (activeImage) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setActiveImage(null);
-      }
+      if (e.key === "Escape") setActiveImage(null);
     };
-
+    
     window.addEventListener("keydown", handleKeyDown);
-    document.body.style.overflow = "hidden";
-
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
     };
   }, [activeImage]);
 
+  if (!images || images.length === 0) return null;
+
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
         {displayImages.map((image, index) => {
-          let spanClass = "col-span-1";
-          let aspectClass = "aspect-[16/10]";
+          // Asymmetric layout logic for Bento Grid:
+          // Depending on total items, we make some cells wide (col-span-2) or keep tall
+          let spanClass = "md:col-span-1";
+          let aspectClass = "aspect-[4/3] md:aspect-[3/4]"; // default portrait-like for variation
 
-          if (displayImages.length === 1) {
+          const total = displayImages.length;
+
+          if (total === 1) {
             spanClass = "md:col-span-3";
-            aspectClass = "aspect-[21/9]";
-          } else if (displayImages.length === 2) {
-            if (index === 0) {
-              spanClass = "md:col-span-2";
-            } else {
-              spanClass = "md:col-span-1";
-            }
-          } else if (displayImages.length === 3) {
-            if (index === 0) {
-              spanClass = "md:col-span-2";
-            } else if (index === 1) {
-              spanClass = "md:col-span-1";
-            } else {
-              spanClass = "md:col-span-3";
-              aspectClass = "aspect-[21/9] md:aspect-[25/9]";
-            }
-          } else {
+            aspectClass = "aspect-[16/10]";
+          } else if (total === 2) {
+            spanClass = index === 0 ? "md:col-span-2" : "md:col-span-1";
+            aspectClass = "aspect-[16/10] md:aspect-auto";
+          } else if (total >= 3) {
+            // Alternating bento row spans for modern asymmetric editorial layout
             const rowPattern = index % 4;
             if (rowPattern === 0 || rowPattern === 3) {
               spanClass = "md:col-span-2";
@@ -80,17 +76,20 @@ export default function ProjectGallery({
               key={`${image.url}-${index}`}
               onClick={() => setActiveImage(image.url)}
               className={clsx(
-                "group relative overflow-hidden border border-[var(--ink)] bg-[var(--ink)] cursor-zoom-in",
+                "group relative overflow-hidden border border-[var(--ink)] bg-[var(--ink)] cursor-zoom-in min-h-[220px]",
                 spanClass,
                 aspectClass
               )}
             >
-              <div
-                aria-label={image.alt ?? `${title} image ${index + 1}`}
-                role="img"
-                className="h-full w-full bg-cover bg-center transition-transform duration-700 hover:scale-[1.03]"
-                style={{ backgroundImage: `url(${image.url})` }}
-              />
+              <div className="relative h-full w-full overflow-hidden">
+                <Image
+                  src={image.url}
+                  alt={image.alt ?? `${title} showcase screenshot ${index + 1}`}
+                  fill
+                  className="object-cover transition-transform duration-700 hover:scale-[1.03]"
+                  sizes="(max-w-768px) 100vw, (max-w-1200px) 50vw, 33vw"
+                />
+              </div>
               {/* Hover overlay with maximize icon */}
               <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center">
                 <div className="rounded-full bg-black/40 backdrop-blur-md p-3 text-white border border-white/10 transition-transform duration-300 scale-90 group-hover:scale-100">

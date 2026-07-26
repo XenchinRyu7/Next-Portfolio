@@ -123,6 +123,8 @@ export default function ShaderBackground({
     document.body.appendChild(script)
     scriptRef.current = script
 
+    let observer: IntersectionObserver | null = null
+
     script.onload = () => {
       const sketch = (p: any) => {
         let theShader: any, shaderBg: any
@@ -135,6 +137,20 @@ export default function ShaderBackground({
           p.noStroke()
           shaderBg = p.createGraphics(w, h, p.WEBGL)
           theShader = shaderBg.createShader(vertShader, fragShader)
+
+          if (containerRef.current) {
+            observer = new IntersectionObserver(
+              ([entry]) => {
+                if (entry.isIntersecting) {
+                  p.loop()
+                } else {
+                  p.noLoop()
+                }
+              },
+              { threshold: 0.01 }
+            )
+            observer.observe(containerRef.current)
+          }
         }
 
         p.draw = () => {
@@ -171,6 +187,7 @@ export default function ShaderBackground({
     }
 
     return () => {
+      if (observer) observer.disconnect()
       if (p5Ref.current) p5Ref.current.remove()
       if (scriptRef.current && document.body.contains(scriptRef.current)) {
         document.body.removeChild(scriptRef.current)
