@@ -1,0 +1,1 @@
+import{o as e,t}from"./react.BHk431b0.js";import{t as n}from"./jsx-runtime.DtQc8_p0.js";var r=e(t()),i=n(),a=r.forwardRef(({href:e,children:t,...n},r)=>(0,i.jsx)(`a`,{href:e,ref:r,...n,children:t}));a.displayName=`Link`;export{a as t};

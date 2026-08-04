@@ -1,0 +1,119 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { FiCalendar, FiMapPin, FiClock } from "react-icons/fi";
+import { getGalleryItem, getGalleryItems } from "@/lib/gallery-api";
+import ProjectGallery from "@/components/project-gallery";
+import MistTitle from "@/components/mist-title";
+
+export async function getStaticPaths() {
+  const items = await getGalleryItems({ limit: 100 });
+  return items.map((item) => ({
+    params: { id: item.id },
+  }));
+}
+
+const { id } = Astro.params;
+const item = await getGalleryItem(id);
+
+if (!item) {
+  return Astro.redirect("/404");
+}
+
+const paragraphs = item.description.split("\n").filter((p) => p.trim() !== "");
+const firstParagraph = paragraphs[0] || "";
+const otherParagraphs = paragraphs.slice(1);
+---
+
+<Layout
+  title={`${item.title} — Saeful Rohman`}
+  description={item.description}
+>
+  <section class="relative overflow-hidden pt-32 md:pt-40">
+    <div class="mx-auto max-w-[1400px] px-5 md:px-10">
+      <a
+        href="/gallery"
+        class="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--mute)] hover:text-[var(--ink)]"
+      >
+        &larr; All activities
+      </a>
+      <p class="label mt-10 text-[var(--mute)]">
+        § Event Captured &bull; {item.date}
+      </p>
+      <div class="mt-6 md:mt-10">
+        <MistTitle client:visible reflectHeight={0.5}>
+          <h1 class="display-1 text-[clamp(2.5rem,8vw,6.5rem)] leading-[0.9] text-[var(--ink)]">
+            {item.title}.
+          </h1>
+        </MistTitle>
+      </div>
+    </div>
+  </section>
+
+  {/* Main content grid */}
+  <section class="mx-auto mt-16 max-w-[1400px] px-5 md:px-10">
+    <div class="grid grid-cols-12 gap-8 items-start border-t border-[var(--rule)] pt-12">
+      {/* Left Block: Description */}
+      <div class="col-span-12 lg:col-span-8 space-y-6">
+        <p class="font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">
+          Overview
+        </p>
+        {firstParagraph && (
+          <p class="font-serif text-xl md:text-2xl leading-relaxed text-[var(--ink)]/90 first-letter:float-left first-letter:text-7xl first-letter:font-serif first-letter:font-bold first-letter:mr-3 first-letter:text-[var(--acid)] first-letter:leading-[0.8] first-letter:mt-1">
+            {firstParagraph}
+          </p>
+        )}
+        {otherParagraphs.map((para, idx) => (
+          <p key={idx} class="text-base md:text-lg leading-relaxed text-[var(--ink)]/75 mt-4">
+            {para}
+          </p>
+        ))}
+      </div>
+
+      {/* Right Block: Event Metadata */}
+      <div class="col-span-12 lg:col-span-4 border border-[var(--ink)] bg-[var(--bone)] p-6 shadow-sm">
+        <h4 class="font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--mute)] border-b border-[var(--rule)] pb-3">
+          Event Details
+        </h4>
+        <div class="mt-4 space-y-4">
+          <div class="flex items-center gap-3">
+            <FiCalendar class="h-4 w-4 text-[var(--mute)]" />
+            <div>
+              <p class="font-mono text-[9px] uppercase tracking-wider text-[var(--mute)]">Date</p>
+              <p class="font-serif text-sm italic">{item.date}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <FiClock class="h-4 w-4 text-[var(--mute)]" />
+            <div>
+              <p class="font-mono text-[9px] uppercase tracking-wider text-[var(--mute)]">Imported At</p>
+              <p class="font-serif text-sm italic">
+                {new Date(item.createdAt).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <FiMapPin class="h-4 w-4 text-[var(--mute)]" />
+            <div>
+              <p class="font-mono text-[9px] uppercase tracking-wider text-[var(--mute)]">Context</p>
+              <p class="font-serif text-sm italic">Community Event</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Large Immersive Photo Grid */}
+  <section class="mx-auto mt-16 max-w-[1400px] px-5 md:px-10 pb-24 md:pb-32">
+    <div class="border-t border-[var(--rule)] pt-12">
+      <p class="font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--mute)] mb-8">
+        Captured Gallery ({item.images.length} photos)
+      </p>
+      <ProjectGallery client:load images={item.images} title={item.title} />
+    </div>
+  </section>
+</Layout>

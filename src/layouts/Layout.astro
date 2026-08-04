@@ -1,0 +1,78 @@
+---
+import Nav from "@/components/nav";
+import Footer from "@/components/footer";
+import Cursor from "@/components/cursor";
+import SmoothScroll from "@/components/smooth-scroll";
+import Dock from "@/components/dock";
+import TerminalPopup from "@/components/terminal-popup";
+import "@/styles/globals.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Saeful Rohman — Fullstack Software Engineer / AI / Game Developer",
+  description = "Portfolio of Saeful Rohman — a fullstack software engineer active in game development and AI engineering building autonomous agents.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content="Saeful Rohman, Software Engineer, Fullstack Developer, AI Engineer, Autonomous Agents, Game Developer, Astro Portfolio, Informatics Engineering" />
+    <meta name="author" content="Saeful Rohman" />
+    <link rel="canonical" href={Astro.url.pathname} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content="Saeful Rohman Portfolio" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Favicon link -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
+    <style is:global>
+      :root {
+        --font-serif: 'Fraunces', serif;
+        --font-sans: 'Space Grotesk', sans-serif;
+        --font-mono: 'JetBrains Mono', monospace;
+      }
+    </style>
+  </head>
+  <body class="antialiased selection:bg-[var(--ink)] selection:text-[var(--acid)]">
+    <SmoothScroll client:load />
+    <Cursor client:load />
+    <Nav client:load />
+    <main class="relative pb-8 md:pb-32">
+      <slot />
+    </main>
+    <Footer />
+    <Dock client:load />
+    <TerminalPopup client:load />
+  </body>
+</html>
