@@ -1,0 +1,301 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import JourneyMap from "@/components/journey-map";
+import MistTitle from "@/components/mist-title";
+import PainterlyMoment from "@/components/painterly-moment";
+import PrinciplesWeb from "@/components/principles-web";
+import CinematicWork from "@/components/cinematic-work";
+import BentoGrid from "@/components/bento-grid";
+import CurtainIntro from "@/components/curtain-intro";
+import ScrollReveal from "@/components/scroll-reveal";
+import Parallax from "@/components/parallax";
+import CVSection from "@/components/cv-section";
+import GalleryTeaser from "@/components/gallery-teaser";
+import CertificatesTicker from "@/components/certificates-ticker";
+import { getShowcaseProjects } from "@/lib/project-api";
+import { getGalleryItems } from "@/lib/gallery-api";
+import { getCertificates } from "@/lib/certificate-api";
+
+// Fetch data on the server during build (SSG)
+const [projects, allGalleryItems, certificates] = await Promise.all([
+  getShowcaseProjects(),
+  getGalleryItems({ limit: 100 }),
+  getCertificates(),
+]);
+
+let highlightItems = allGalleryItems.filter((item) => item.highlight === true);
+if (highlightItems.length === 0) {
+  highlightItems = allGalleryItems;
+}
+const sortedHighlights = [...highlightItems].sort((a, b) => b.date.localeCompare(a.date));
+---
+
+<Layout>
+  {/* ═══════════════ SCENE -1 · THE CURTAIN ═══════════════ */}
+  <CurtainIntro client:load />
+
+  {/* ═══════════════ SCENE 00 · COLD OPEN ═══════════════ */}
+  <section
+    data-parallax-scope
+    class="relative isolate flex min-h-fit md:min-h-[100svh] flex-col overflow-hidden px-4 py-16 md:py-0 md:px-10"
+  >
+    {/* Background: horizon gradient + topographic lines */}
+    <div
+      aria-hidden
+      class="absolute inset-0 -z-10"
+      style={{
+        background:
+          "linear-gradient(to bottom, var(--bone) 0%, #f6efde 55%, #efe4c8 100%)",
+      }}
+    />
+    <Parallax client:idle speed={-60} className="absolute inset-x-0 bottom-[-10%] top-[30%] -z-10">
+      <svg
+        aria-hidden
+        class="absolute inset-0 opacity-[0.18]"
+        viewBox="0 0 1000 500"
+        preserveAspectRatio="none"
+      >
+        <g fill="none" stroke="var(--ink)" stroke-width="0.6">
+          {Array.from({ length: 14 }).map((_, i) => (
+            <path
+              d={`M 0 ${420 - i * 14} Q 250 ${
+                380 - i * 14 - (i % 2 ? 20 : 0)
+              } 500 ${400 - i * 14} T 1000 ${410 - i * 14}`}
+            />
+          ))}
+        </g>
+      </svg>
+    </Parallax>
+
+    <div class="mx-auto flex w-full max-w-[1400px] flex-1 flex-col justify-center px-5 md:px-10 py-4">
+      <div class="flex items-center justify-between pt-4 font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--ink)]/60 md:pt-4">
+        <span class="flex items-center gap-2">
+          <span class="relative inline-flex h-2 w-2">
+            <span class="absolute inset-0 animate-ping rounded-full bg-[var(--plum)] opacity-60" />
+            <span class="relative inline-block h-2 w-2 rounded-full bg-[var(--plum)]" />
+          </span>
+          REC · scene 00 / cold open
+        </span>
+        <span class="hidden md:inline">Jakarta · UTC+7 · 2026 edition</span>
+      </div>
+
+      <div class="mt-12 md:mt-20">
+        <ScrollReveal client:visible mode="words" stagger={0.06} start="top 95%">
+          <MistTitle client:visible reflectHeight={0.6}>
+            <h1 class="display-1 text-[clamp(4rem,17vw,16rem)] leading-[0.82]">
+              Saeful Rohman.
+            </h1>
+          </MistTitle>
+        </ScrollReveal>
+      </div>
+
+      <div class="mt-20 grid grid-cols-12 gap-6 md:mt-32">
+        <ScrollReveal client:visible className="col-span-12 md:col-span-7" stagger={0.1}>
+          <p class="max-w-2xl text-balance font-serif text-[clamp(1.1rem,1.6vw,1.4rem)] italic leading-[1.4] text-[var(--ink)]/80">
+            I’m a fullstack software engineer with broad expertise in other fields like game development and AI engineering building autonomous agents. I build at the intersection of{" "}
+            <span class="not-italic font-medium">mobile</span>,{" "}
+            <span class="not-italic font-medium">fullstack web</span>,{" "}
+            <span class="not-italic font-medium">games</span>, and{" "}
+            <span class="not-italic font-medium">AI engineering</span>
+            &nbsp;— autonomous agents, automations, and interfaces that move
+            the way they should.
+          </p>
+        </ScrollReveal>
+
+        <ScrollReveal
+          client:visible
+          className="col-span-12 flex flex-col gap-4 md:col-span-5 md:items-end md:justify-end md:text-right"
+          stagger={0.1}
+        >
+          <p class="label text-[var(--mute)]">Now playing</p>
+          <p class="font-serif text-xl italic md:text-2xl">
+            Shipping agents & fullstack platforms.
+          </p>
+          <div class="mt-3 flex gap-2 md:justify-end">
+            <a
+              href="#journey"
+              class="inline-flex items-center gap-2 border border-[var(--ink)] bg-[var(--ink)] px-5 py-3 font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--bone)] transition-transform hover:-translate-y-0.5"
+            >
+              The journey ↓
+            </a>
+            <a
+              href="#work"
+              class="inline-flex items-center gap-2 border border-[var(--ink)] px-5 py-3 font-mono text-[11px] uppercase tracking-[0.22em] transition-transform hover:-translate-y-0.5"
+            >
+              Selected work ↓
+            </a>
+          </div>
+        </ScrollReveal>
+      </div>
+    </div>
+  </section>
+
+  {/* ═══════════════ HERO MOMENT · ORBIT ═══════════════ */}
+  <PainterlyMoment
+    client:visible
+    variant="orbit"
+    kicker="§ Cutscene · 01"
+    caption="At the centre — a runtime. Around it — satellites of intent. Agents, automations, and the humans who steer them."
+  />
+
+  {/* ═══════════════ SCENE 02 · WHO IT'S FOR ═══════════════ */}
+  <section class="relative overflow-hidden py-8">
+    <div class="mx-auto max-w-[1400px] px-5 md:px-10">
+      <div class="mb-12 flex items-center justify-between md:mb-16">
+        <ScrollReveal client:visible>
+          <p class="label text-[var(--mute)]">§ 02 · Who it's for</p>
+        </ScrollReveal>
+        <p class="hidden font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--mute)] md:inline">
+          Direct. Welcoming. Respectful.
+        </p>
+      </div>
+      <ScrollReveal client:visible mode="words" stagger={0.07} start="top 85%">
+        <MistTitle client:visible reflectHeight={0.5}>
+          <h2 class="display-2 text-[clamp(4rem,15vw,14rem)] leading-[0.88] tracking-[-0.03em]">
+            Who it's for.
+          </h2>
+        </MistTitle>
+      </ScrollReveal>
+
+      <div class="mt-24 grid grid-cols-1 gap-px border-y border-[var(--rule)] bg-[var(--rule)] md:grid-cols-3">
+        <ScrollReveal client:visible mode="block" delay={0}>
+          <div class="bg-[var(--bone)] p-8 md:p-10">
+            <p class="font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">
+              / Founders
+            </p>
+            <p class="mt-6 font-serif text-[clamp(1.25rem,2vw,1.5rem)] italic leading-[1.2]">
+              Who need a builder who moves like a team — design, ship, learn, repeat.
+            </p>
+          </div>
+        </ScrollReveal>
+        <ScrollReveal client:visible mode="block" delay={0.12}>
+          <div class="bg-[var(--bone)] p-8 md:p-10">
+            <p class="font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">
+              / Teams
+            </p>
+            <p class="mt-6 font-serif text-[clamp(1.25rem,2vw,1.5rem)] italic leading-[1.2]">
+              Who want agents that actually work in production, not slideware.
+            </p>
+          </div>
+        </ScrollReveal>
+        <ScrollReveal client:visible mode="block" delay={0.24}>
+          <div class="bg-[var(--bone)] p-8 md:p-10">
+            <p class="font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">
+              / Students
+            </p>
+            <p class="mt-6 font-serif text-[clamp(1.25rem,2vw,1.5rem)] italic leading-[1.2]">
+              Who treat code like craft and want a peer, not a tutor.
+            </p>
+          </div>
+        </ScrollReveal>
+      </div>
+    </div>
+  </section>
+
+  {/* ═══════════════ HERO MOMENT · MOUNTAIN ═══════════════ */}
+  <PainterlyMoment
+    client:visible
+    variant="mountain"
+    kicker="§ Cutscene · 02"
+    caption="From a small island to a quiet studio — the path had fewer straight lines than you'd expect."
+  />
+
+  {/* ═══════════════ SCENE 03 · JOURNEY ═══════════════ */}
+  <JourneyMap client:visible />
+
+  {/* ═══════════════ SCENE 04 · PRINCIPLES ═══════════════ */}
+  <PrinciplesWeb client:visible />
+  <BentoGrid client:visible />
+
+  {/* ═══════════════ HERO MOMENT · HORIZON ═══════════════ */}
+  <PainterlyMoment
+    client:visible
+    variant="horizon"
+    kicker="§ Cutscene · 03"
+    caption="Beyond the singularity, the old rules of programming dissolve. I architect the entangled nodes and superposed agents that redefine how humans and machines collide."
+  />
+
+  {/* ═══════════════ SCENE 05 · WORK POSTERS ═══════════════ */}
+  <section id="work" class="relative">
+    <div class="mx-auto max-w-[1400px] px-5 pb-12 pt-28 md:px-10 md:pb-16 md:pt-40">
+      <ScrollReveal client:visible>
+        <p class="label text-[var(--mute)]">§ 05 · Selected work</p>
+      </ScrollReveal>
+      <div class="mt-6 flex flex-wrap items-end justify-between gap-6">
+        <ScrollReveal client:visible mode="words" stagger={0.06}>
+          <h2 class="display-1 text-[clamp(3rem,9vw,7.5rem)]">
+            The reel.
+          </h2>
+        </ScrollReveal>
+        <a
+          href="/work"
+          class="font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--mute)] hover:text-[var(--ink)]"
+        >
+          All projects →
+        </a>
+      </div>
+    </div>
+    <div>
+      {projects.slice(0, 4).map((p, i) => (
+        <CinematicWork
+          client:visible
+          project={p}
+          index={i}
+          total={Math.min(4, projects.length)}
+        />
+      ))}
+    </div>
+  </section>
+
+  {/* ═══════════════ HERO MOMENT · TERMINAL ═══════════════ */}
+  <PainterlyMoment
+    client:visible
+    variant="terminal"
+    kicker="§ End credits"
+    caption="Roll credits. (Your project starts in the next scene.)"
+  />
+
+  <GalleryTeaser client:visible items={sortedHighlights} />
+
+  <CertificatesTicker client:visible certificates={certificates} />
+
+  <CVSection client:visible />
+
+  {/* ═══════════════ SCENE 06 · CTA ═══════════════ */}
+  <section class="relative mx-auto max-w-[1400px] px-5 py-4 md:px-10 md:py-8">
+    <ScrollReveal client:visible mode="words" stagger={0.07}>
+      <MistTitle client:visible reflectHeight={0.45}>
+        <h2 class="display-1 text-[clamp(3.5rem,12vw,11rem)] leading-[0.88]">
+          Let's build something alive.
+        </h2>
+      </MistTitle>
+    </ScrollReveal>
+    <div class="mt-20 grid grid-cols-12 gap-6">
+      <ScrollReveal client:visible className="col-span-12 md:col-span-6">
+        <p class="max-w-xl text-[15px] leading-relaxed text-[var(--ink)]/75">
+          Contract, full-time, collaboration, teaching. If it's code,
+          design, agents, or games — I'm interested. Quiet inbox, fast
+          reply.
+        </p>
+      </ScrollReveal>
+      <ScrollReveal
+        client:visible
+        className="col-span-12 flex flex-wrap gap-3 md:col-span-6 md:justify-end"
+        stagger={0.12}
+      >
+        <a
+          href="/contact"
+          class="inline-flex items-center gap-2 border border-[var(--ink)] bg-[var(--ink)] px-5 py-3 font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--bone)]"
+        >
+          Start the conversation →
+        </a>
+        <a
+          href="/about"
+          class="inline-flex items-center gap-2 border border-[var(--ink)] px-5 py-3 font-mono text-[11px] uppercase tracking-[0.22em]"
+        >
+          Read the long version
+        </a>
+      </ScrollReveal>
+    </div>
+  </section>
+</Layout>

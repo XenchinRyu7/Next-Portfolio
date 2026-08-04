@@ -1,0 +1,281 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import clsx from "clsx";
+import MistTitle from "@/components/mist-title";
+import PainterlyMoment from "@/components/painterly-moment";
+import ProjectGallery from "@/components/project-gallery";
+import type { Project } from "@/data/projects";
+import {
+  getAdjacentShowcaseProjects,
+  getShowcaseProject,
+  getShowcaseProjects,
+  formatTimeline,
+} from "@/lib/project-api";
+
+export async function getStaticPaths() {
+  const projects = await getShowcaseProjects();
+  return projects.map((p) => ({
+    params: { slug: p.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const project = await getShowcaseProject(slug);
+
+if (!project) {
+  return Astro.redirect("/404");
+}
+
+const { prev, next } = await getAdjacentShowcaseProjects(slug);
+
+const variantByAccent: Record<
+  Project["accent"],
+  "horizon" | "orbit" | "mountain" | "terminal"
+> = {
+  plum: "horizon",
+  cobalt: "orbit",
+  acid: "mountain",
+  ink: "terminal",
+};
+
+const variant = variantByAccent[project.accent];
+const images = project.images ?? [];
+
+function formatStatus(status?: Project["status"]) {
+  if (status === "completed") return "Completed";
+  if (status === "in-progress") return "In progress";
+  if (status === "planned") return "Planned";
+  return "Shipped";
+}
+---
+
+<Layout
+  title={`${project.title} — Saeful Rohman`}
+  description={project.tagline}
+>
+  {/* Cold-open hero */}
+  <section class="relative overflow-hidden pt-32 md:pt-40">
+    <div class="mx-auto max-w-[1400px] px-5 md:px-10">
+      <a
+        href="/work"
+        class="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--mute)] hover:text-[var(--ink)]"
+      >
+        ← All work
+      </a>
+      <p class="label mt-10 text-[var(--mute)]">
+        § {project.kind} · {formatTimeline(project.startDate, project.endDate, project.status)}
+      </p>
+      <div class="mt-6 md:mt-10">
+        <MistTitle client:visible reflectHeight={0.5}>
+          <h1 class="display-1 text-[clamp(3rem,13vw,12rem)] leading-[0.82]">
+            {project.title}.
+          </h1>
+        </MistTitle>
+      </div>
+      <div class="mt-20 grid grid-cols-12 gap-6 md:mt-28">
+        <p class="col-span-12 max-w-3xl text-balance font-serif text-[clamp(1.3rem,2vw,1.8rem)] italic leading-[1.2] text-[var(--ink)] md:col-span-8">
+          {project.tagline}
+        </p>
+        <div class="col-span-12 flex flex-wrap gap-2 md:col-span-4 md:justify-end">
+          {project.technologies.map((s) => (
+            <span
+              class="border border-[var(--ink)] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em]"
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Cinematic cover */}
+  <section class="mt-24 md:mt-32">
+    <PainterlyMoment
+      client:visible
+      variant={variant}
+      kicker={`§ Cutscene · ${project.kind}`}
+      caption={project.tagline}
+    />
+  </section>
+
+  {/* Meta grid */}
+  <section class="mx-auto mt-14 max-w-[1400px] px-5 md:px-10">
+    <dl class="grid grid-cols-2 gap-px border border-[var(--rule)] bg-[var(--rule)] md:grid-cols-4">
+      <div class="bg-[var(--bone)] p-5">
+        <p class="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--mute)]">Role</p>
+        <p class="mt-2 font-serif text-lg italic">{project.role}</p>
+      </div>
+      <div class="bg-[var(--bone)] p-5">
+        <p class="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--mute)]">Timeline</p>
+        <p class="mt-2 font-serif text-lg italic">{formatTimeline(project.startDate, project.endDate, project.status)}</p>
+      </div>
+      <div class="bg-[var(--bone)] p-5">
+        <p class="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--mute)]">Kind</p>
+        <p class="mt-2 font-serif text-lg italic">{project.kind}</p>
+      </div>
+      <div class="bg-[var(--bone)] p-5">
+        <p class="font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--mute)]">Status</p>
+        <p class="mt-2 font-serif text-lg italic">{formatStatus(project.status)}</p>
+      </div>
+    </dl>
+  </section>
+
+  {images.length > 0 && (
+    <section class="mx-auto mt-14 max-w-[1400px] px-5 md:px-10">
+      <ProjectGallery client:load images={images} title={project.title} />
+    </section>
+  )}
+
+  {/* Case study body */}
+  <section class="mx-auto mt-24 grid max-w-[1400px] grid-cols-12 gap-8 px-5 md:px-10">
+    <div class="col-span-12 md:col-span-6">
+      <p class="label text-[var(--mute)]">Problem</p>
+      <div class="mt-4 space-y-4 text-[16px] leading-relaxed text-[var(--ink)]/85 md:text-[17px]">
+        <p>{project.problem}</p>
+      </div>
+    </div>
+
+    <div class="col-span-12 md:col-span-6">
+      <p class="label text-[var(--mute)]">Overview</p>
+      <div class="mt-4 space-y-4 text-[16px] leading-relaxed text-[var(--ink)]/85 md:text-[17px]">
+        <p>{project.description}</p>
+      </div>
+    </div>
+
+    <div class="col-span-12 md:col-span-7">
+      <p class="label text-[var(--mute)]">Approach</p>
+      <div class="mt-4 space-y-4 text-[16px] leading-relaxed text-[var(--ink)]/85 md:text-[17px]">
+        <ol class="space-y-4">
+          {project.approach.map((a, i) => (
+            <li
+              class="grid grid-cols-[auto_1fr] gap-4 border-b border-dashed border-[var(--rule)] pb-4 last:border-0"
+            >
+              <span class="font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">
+                / {String(i + 1).padStart(2, "0")}
+              </span>
+              <span>{a}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+
+    <div class="col-span-12 md:col-span-5">
+      <p class="label text-[var(--mute)]">Outcome</p>
+      <div class="mt-4 space-y-4 text-[16px] leading-relaxed text-[var(--ink)]/85 md:text-[17px]">
+        <ul class="space-y-3">
+          {project.outcome.map((o, i) => (
+            <li
+              class="flex items-start gap-3 border border-[var(--ink)] bg-[var(--bone)] p-4"
+            >
+              <span class="mt-1.5 block h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[var(--acid)]" />
+              <span>{o}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    {project.features && project.features.length > 0 && (
+      <div class="col-span-12 md:col-span-7">
+        <p class="label text-[var(--mute)]">Features</p>
+        <div class="mt-4 space-y-4 text-[16px] leading-relaxed text-[var(--ink)]/85 md:text-[17px]">
+          <ul class="grid grid-cols-1 gap-3 md:grid-cols-2">
+            {project.features.map((feature) => (
+              <li
+                class="border border-[var(--rule)] px-4 py-3"
+              >
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    )}
+
+    {(project.tags?.length || project.startDate || project.endDate) && (
+      <div class="col-span-12 md:col-span-5">
+        <p class="label text-[var(--mute)]">Backend metadata</p>
+        <div class="mt-4 space-y-4 text-[16px] leading-relaxed text-[var(--ink)]/85 md:text-[17px]">
+          <div class="space-y-4">
+            {(project.startDate || project.endDate) && (
+              <p class="font-serif text-xl italic">
+                {formatTimeline(project.startDate, project.endDate)}
+              </p>
+            )}
+            {project.tags && project.tags.length > 0 && (
+              <ul class="flex flex-wrap gap-2">
+                {project.tags.map((tag) => (
+                  <li
+                    class="border border-[var(--ink)]/40 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em]"
+                  >
+                    {tag}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {project.links && project.links.length > 0 && (
+      <div class="col-span-12">
+        <p class="label text-[var(--mute)]">Links</p>
+        <div class="mt-4 space-y-4 text-[16px] leading-relaxed text-[var(--ink)]/85 md:text-[17px]">
+          <div class="flex flex-wrap gap-3">
+            {project.links.map((l) => (
+              <a
+                href={l.href}
+                target={l.href.startsWith("http") ? "_blank" : undefined}
+                rel="noreferrer"
+                class="inline-flex items-center gap-2 border border-[var(--ink)] px-4 py-2 font-mono text-[11px] uppercase tracking-[0.22em] hover:bg-[var(--ink)] hover:text-[var(--bone)]"
+              >
+                {l.label} ↗
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+  </section>
+
+  {/* Prev / next nav */}
+  <section class="mx-auto mt-24 max-w-[1400px] px-5 md:px-10">
+    <div class="grid grid-cols-1 gap-px border border-[var(--ink)] bg-[var(--ink)] md:grid-cols-2">
+      {prev && (
+        <a
+          href={`/work/${prev.slug}`}
+          class={clsx(
+            "group flex flex-col gap-4 bg-[var(--bone)] p-8 transition-colors hover:bg-[var(--acid)] md:p-12"
+          )}
+        >
+          <span class="font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">
+            ← Previous
+          </span>
+          <h3 class="font-serif text-[clamp(1.8rem,4vw,2.8rem)] italic leading-tight">
+            {prev.title}
+          </h3>
+          <p class="text-[var(--ink)]/75">{prev.tagline}</p>
+        </a>
+      )}
+      {next && (
+        <a
+          href={`/work/${next.slug}`}
+          class={clsx(
+            "group flex flex-col gap-4 bg-[var(--bone)] p-8 transition-colors hover:bg-[var(--acid)] md:p-12 md:text-right"
+          )}
+        >
+          <span class="font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--mute)]">
+            → Next
+          </span>
+          <h3 class="font-serif text-[clamp(1.8rem,4vw,2.8rem)] italic leading-tight">
+            {next.title}
+          </h3>
+          <p class="text-[var(--ink)]/75">{next.tagline}</p>
+        </a>
+      )}
+    </div>
+  </section>
+</Layout>

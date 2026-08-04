@@ -46,50 +46,21 @@ export default function ProjectGallery({
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {displayImages.map((image, index) => {
-          // Asymmetric layout logic for Bento Grid:
-          // Depending on total items, we make some cells wide (col-span-2) or keep tall
-          let spanClass = "md:col-span-1";
-          let aspectClass = "aspect-[4/3] md:aspect-[3/4]"; // default portrait-like for variation
-
-          const total = displayImages.length;
-
-          if (total === 1) {
-            spanClass = "md:col-span-3";
-            aspectClass = "aspect-[16/10]";
-          } else if (total === 2) {
-            spanClass = index === 0 ? "md:col-span-2" : "md:col-span-1";
-            aspectClass = "aspect-[16/10] md:aspect-auto";
-          } else if (total >= 3) {
-            // Alternating bento row spans for modern asymmetric editorial layout
-            const rowPattern = index % 4;
-            if (rowPattern === 0 || rowPattern === 3) {
-              spanClass = "md:col-span-2";
-            } else {
-              spanClass = "md:col-span-1";
-            }
-          }
-
           return (
             <div
               key={`${image.url}-${index}`}
               onClick={() => setActiveImage(image.url)}
-              className={clsx(
-                "group relative overflow-hidden border border-[var(--ink)] bg-[var(--ink)] cursor-zoom-in min-h-[220px]",
-                spanClass,
-                aspectClass
-              )}
+              className="group relative overflow-hidden border border-[var(--ink)] bg-[var(--ink)] cursor-zoom-in aspect-[16/10] w-full"
             >
-              <div className="relative h-full w-full overflow-hidden">
-                <Image
-                  src={image.url}
-                  alt={image.alt ?? `${title} showcase screenshot ${index + 1}`}
-                  fill
-                  className="object-cover transition-transform duration-700 hover:scale-[1.03]"
-                  sizes="(max-w-768px) 100vw, (max-w-1200px) 50vw, 33vw"
-                />
-              </div>
+              <Image
+                src={image.url}
+                alt={image.alt ?? `${title} showcase screenshot ${index + 1}`}
+                fill
+                className="object-cover transition-transform duration-700 hover:scale-[1.03]"
+                sizes="(max-w-768px) 100vw, (max-w-1200px) 50vw, 33vw"
+              />
               {/* Hover overlay with maximize icon */}
               <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center">
                 <div className="rounded-full bg-black/40 backdrop-blur-md p-3 text-white border border-white/10 transition-transform duration-300 scale-90 group-hover:scale-100">

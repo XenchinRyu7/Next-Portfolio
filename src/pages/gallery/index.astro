@@ -1,0 +1,33 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { getGalleryItems } from "@/lib/gallery-api";
+import GalleryList from "@/components/gallery-list";
+
+const items = await getGalleryItems({ limit: 100 });
+
+// Sort from oldest to newest (ascending order)
+const sortedItems = [...items].sort((a, b) => a.date.localeCompare(b.date));
+---
+
+<Layout
+  title="Gallery — Saeful Rohman"
+  description="Chronicles of my speaking engagements, developer workshops, AI research milestones, and tech activities."
+>
+  <section class="pt-32 md:pt-40">
+    <div class="mx-auto max-w-[1400px] px-5 md:px-10">
+      <p class="label text-[var(--mute)]">§ Activity Log</p>
+      <h1 class="display-1 mt-6 text-[clamp(3rem,11vw,9rem)]">
+        Moments &
+        <br />
+        <span class="not-italic">captured.</span>
+      </h1>
+      <p class="mt-10 max-w-2xl text-balance text-lg leading-relaxed text-[var(--ink)]/75 md:text-xl">
+        A chronicle of my developer community activities, workshops, key speaking events, hackathons, and experimental lab sessions.
+      </p>
+    </div>
+  </section>
+
+  <section class="mx-auto mt-16 max-w-[1400px] px-5 md:px-10">
+    <GalleryList client:load initialItems={sortedItems} />
+  </section>
+</Layout>
